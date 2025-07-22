@@ -7,11 +7,16 @@ import LegoAvatar from "../../assets/lego-avatar.jpg";
 // Profile page for viewing and editing user information
 // Handles avatar upload, field editing, and profile section rendering
 const ProfilePage = ({ user, onSave, onNavigate, isReadOnly, onLogout }) => {
+
   const [editField, setEditField] = useState(null);
   const [editValue, setEditValue] = useState("");
   const [uploadPreview, setUploadPreview] = useState(null);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
+
+  if (!user) {
+    return <div className="profile-bg">Loading...</div>;
+  }
 
   // Handle edit button: set the field to be edited and initialize edit value
   const handleEdit = (field) => {
@@ -120,10 +125,16 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly, onLogout }) => {
               {uploadPreview ? (
                 <img src={uploadPreview} alt="preview" className="profile-avatar" />
               ) : (
-                <img 
-                  src={user.image_url ? (user.image_url.startsWith('http') ? user.image_url : `${API_URL}${user.image_url}`) : LegoAvatar} 
-                  alt="avatar" 
-                  className="profile-avatar" 
+                <img
+                  src={
+                    user && user.image_url
+                      ? (user.image_url.startsWith('http')
+                          ? user.image_url
+                          : `${API_URL}${user.image_url}`)
+                      : LegoAvatar
+                  }
+                  alt="avatar"
+                  className="profile-avatar"
                 />
               )}
               {uploading && <div className="upload-overlay">Uploading...</div>}
