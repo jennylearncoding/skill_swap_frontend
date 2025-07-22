@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import axios from "axios";
-import LandingPage from "./components/LandingPage/LandingPage";
 import ProfilePage from "./components/ProfilePage/ProfilePage";
-import MatchSuggestionsPage from "./components/MatchSuggestionsPage/MatchSuggestionsPage";
-import ChatPage from "./components/ChatPage/ChatPage";
-import HowItWorksPage from "./components/HowItWorksPage/HowItWorksPage";
-import UserDropdown from "./components/UserDropdown/UserDropdown";
 
 export const API_URL = process.env.REACT_APP_API_URL || "http://127.0.0.1:5000";
 
@@ -170,47 +165,15 @@ const App = () => {
 
   // Render the current page based on user and navigation state
   const renderPage = () => {
-    if (!user) {
-      if (page === "howitworks") {
-        return <HowItWorksPage onNavigate={setPage} />;
-      }
-      return <LandingPage onLogin={handleLogin} onSignup={handleLogin} onNavigate={setPage} />;
-    }
-    
-    switch (page) {
-      case "howitworks":
-        return <HowItWorksPage user={user} onLogin={handleLogin} onNavigate={setPage} onLogout={handleLogout} />;
-      case "landing":
-        return <LandingPage onLogin={handleLogin} onNavigate={setPage} />;
-      case "profile":
-        return <ProfilePage user={user} onSave={handleProfileSave} onNavigate={setPage} onLogout={handleLogout} />;
-      case "matches":
-        return (
-          <MatchSuggestionsPage
-            onChat={handleStartChat}
-            onNavigate={setPage}
-            user={user}
-            viewedUser={viewedUser}
-            setViewedUser={setViewedUser}
-            onLogout={handleLogout}
-          />
-        );
-      case "chat":
-        return (
-          <ChatPage
-            match={selectedMatch}
-            matches={chats}
-            onSelectConversation={handleSelectConversation}
-            onBack={() => setPage("matches")}
-            user={user}
-            onNavigate={setPage}
-            onLogout={handleLogout}
-            onRatingSuccess={handleRatingSuccess}
-          />
-        );
-      default:
-        return null;
-    }
+    // Only render ProfilePage since other components do not exist
+    return (
+      <ProfilePage
+        user={user}
+        onSave={handleProfileSave}
+        onNavigate={setPage}
+        onLogout={handleLogout}
+      />
+    );
   };
 
   return (

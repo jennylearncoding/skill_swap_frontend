@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
 import "./ProfilePage.css";
-import UserDropdown from "../UserDropdown/UserDropdown";
 import { API_URL } from "../../App";
 import LegoAvatar from "../../assets/lego-avatar.jpg";
 
@@ -112,7 +111,6 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly, onLogout }) => {
       { !isReadOnly && (
         <div className="profile-header">
           <span className="profile-logo">Skill Exchange App</span>
-          <UserDropdown user={user} onNavigate={onNavigate} onLogout={onLogout} />
         </div>
       )}
       <div className="profile-main">
