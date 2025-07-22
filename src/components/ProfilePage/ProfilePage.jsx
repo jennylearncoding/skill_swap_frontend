@@ -64,11 +64,6 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
 
   return (
     <div className="profile-bg">
-      { !isReadOnly && (
-        <div className="profile-header">
-          <span className="profile-logo">Skill Exchange App</span>
-        </div>
-      )}
       <div className="profile-main">
         <div className="profile-card profile-left">
           <div className="profile-section">

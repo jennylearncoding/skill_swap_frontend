@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "./App.css";
 import ProfilePage from "./components/ProfilePage/ProfilePage";
+import LandingPage from "./components/LandingPage/LandingPage";
+import Navigation from "./components/Navigation/Navigation";
 
 export const API_URL = process.env.REACT_APP_API_URL || "http://127.0.0.1:5000";
 
@@ -21,6 +23,7 @@ const App = () => {
     average_rating: 4.5,
     image_url: null
   });
+  const [currentPage, setCurrentPage] = useState("landing");
 
 
 
@@ -38,16 +41,19 @@ const App = () => {
 
   // Render the current page based on user and navigation state
   const renderPage = () => {
-    return (
-      <ProfilePage
-        user={user}
-        onSave={handleProfileSave}
-      />
-    );
+    switch (currentPage) {
+      case "landing":
+        return <LandingPage onNavigate={setCurrentPage} />;
+      case "profile":
+        return <ProfilePage user={user} onSave={handleProfileSave} />;
+      default:
+        return <LandingPage onNavigate={setCurrentPage} />;
+    }
   };
 
   return (
     <div className="App">
+      <Navigation currentPage={currentPage} onNavigate={setCurrentPage} />
       {renderPage()}
     </div>
   );
