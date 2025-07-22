@@ -1,22 +1,16 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import "./ProfilePage.css";
 import { API_URL } from "../../App";
-import LegoAvatar from "../../assets/lego-avatar.jpg";
 
 // Profile page for viewing and editing user information
 // Handles avatar upload, field editing, and profile section rendering
-const ProfilePage = ({ user, onSave, onNavigate, isReadOnly, onLogout }) => {
+const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
 
   const [editField, setEditField] = useState(null);
   const [editValue, setEditValue] = useState("");
-  const [uploadPreview, setUploadPreview] = useState(null);
-  const [uploading, setUploading] = useState(false);
-  const fileInputRef = useRef(null);
 
-  if (!user) {
-    return <div className="profile-bg">Loading...</div>;
-  }
+
 
   // Handle edit button: set the field to be edited and initialize edit value
   const handleEdit = (field) => {
@@ -34,50 +28,7 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly, onLogout }) => {
     }
   };
 
-  // Handle image selection: preview and upload new avatar
-  const handleImageSelect = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      // Preview the selected image
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setUploadPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
 
-      // Upload the image
-      handleImageUpload(file);
-    }
-  };
-
-  // Handle image upload: send file to backend and update user
-  const handleImageUpload = async (file) => {
-    setUploading(true);
-    try {
-      const formData = new FormData();
-      formData.append('image', file);
-
-      const response = await axios.post(`${API_URL}/upload/profile-image/${user.id}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-
-      // Update the user data with the new image URL
-      const updatedUser = {
-        ...user,
-        image_url: response.data.image_url
-      };
-      onSave(updatedUser);
-      setUploadPreview(null);
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      alert('Failed to upload image. Please try again.');
-      setUploadPreview(null);
-    } finally {
-      setUploading(false);
-    }
-  };
 
   // Handle save: update profile field via API and update parent state
   const handleSave = async () => {
@@ -120,44 +71,6 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly, onLogout }) => {
       )}
       <div className="profile-main">
         <div className="profile-card profile-left">
-          <div className="profile-avatar-section">
-            <div className="profile-avatar-container">
-              {uploadPreview ? (
-                <img src={uploadPreview} alt="preview" className="profile-avatar" />
-              ) : (
-                <img
-                  src={
-                    user && user.image_url
-                      ? (user.image_url.startsWith('http')
-                          ? user.image_url
-                          : `${API_URL}${user.image_url}`)
-                      : LegoAvatar
-                  }
-                  alt="avatar"
-                  className="profile-avatar"
-                />
-              )}
-              {uploading && <div className="upload-overlay">Uploading...</div>}
-            </div>
-            {!isReadOnly && (
-              <>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleImageSelect}
-                  accept="image/*"
-                  style={{ display: 'none' }}
-                />
-                <button 
-                  className="profile-upload-btn"
-                  onClick={() => fileInputRef.current.click()}
-                  disabled={uploading}
-                >
-                  {uploading ? 'Uploading...' : 'Upload Photo'}
-                </button>
-              </>
-            )}
-          </div>
           <div className="profile-section">
             <div className="profile-section-header">
               User Info {(!isReadOnly && editField !== "user_info") && (<button className="profile-edit-btn" onClick={() => handleEdit("user_info")}>Edit</button>)}
