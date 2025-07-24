@@ -19,7 +19,7 @@ const App = () => {
     const fetchUser = async () => {
       try {
         // For now, we'll use a demo user ID. In a real app, this would come from authentication
-        const response = await axios.get(`${API_URL}/profile/1`);
+        const response = await axios.get(`${API_URL}/profiles/1`);
         setUser(response.data);
       } catch (error) {
         console.error("Error fetching user:", error);

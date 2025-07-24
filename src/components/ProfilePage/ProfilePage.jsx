@@ -47,7 +47,7 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
       } else {
         payload[editField] = editValue;
       }
-      const res = await axios.put(`${API_URL}/profile/${user.id}`, payload);
+      const res = await axios.patch(`${API_URL}/profile/${user.id}`, payload);
       onSave(res.data);
       setEditField(null);
       setEditValue("");
