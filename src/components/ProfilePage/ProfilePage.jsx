@@ -81,7 +81,7 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
                 </>
               ) : (
                 <>
-                  <div>Your Name: <b>{user.name || "Not set"}</b></div>
+                  <div>Your Name: <b>{user.username || "Not set"}</b></div>
                   <div>Pronouns: <b>{user.pronouns || "Not set"}</b></div>
                   <div>Email: <b>{user.email || "Not set"}</b></div>
                 </>
