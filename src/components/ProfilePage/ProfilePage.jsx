@@ -17,7 +17,7 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
     setEditField(field);
     if (field === "user_info") {
       setEditValue({
-        name: user.name || "",
+        name: user.username || "",
         pronouns: user.pronouns || "",
         email: user.email || ""
       });
@@ -73,7 +73,7 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
             <div className="profile-section-content">
               {editField === "user_info" ? (
                 <>
-                  <div>Your Name: <input value={editValue.name} onChange={e => setEditValue({ ...editValue, name: e.target.value })} /></div>
+                  <div>Your Name: <input value={editValue.username} onChange={e => setEditValue({ ...editValue, username: e.target.value })} /></div>
                   <div>Pronouns: <input value={editValue.pronouns} onChange={e => setEditValue({ ...editValue, pronouns: e.target.value })} /></div>
                   <div>Email: <input value={editValue.email} onChange={e => setEditValue({ ...editValue, email: e.target.value })} /></div>
                   <button onClick={handleSave}>Save</button>
