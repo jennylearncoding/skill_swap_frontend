@@ -9,12 +9,14 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
 
   const [editField, setEditField] = useState(null);
   const [editValue, setEditValue] = useState("");
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
 
 
   // Handle edit button: set the field to be edited and initialize edit value
   const handleEdit = (field) => {
     setEditField(field);
+    setHasUnsavedChanges(true);
     if (field === "user_info") {
       setEditValue({
         username: user.username || "",
@@ -57,6 +59,7 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
       onSave(res.data);
       setEditField(null);
       setEditValue("");
+      setHasUnsavedChanges(false);
     } catch (err) {
       console.error('Error details:', err);
       alert("Failed to update profile.");
@@ -67,6 +70,7 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
   const handleCancel = () => {
     setEditField(null);
     setEditValue("");
+    setHasUnsavedChanges(false);
   };
 
   return (
@@ -83,7 +87,6 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
                   <div>Your Name: <input value={editValue.username} onChange={e => setEditValue({ ...editValue, username: e.target.value })} /></div>
                   <div>Pronouns: <input value={editValue.pronouns} onChange={e => setEditValue({ ...editValue, pronouns: e.target.value })} /></div>
                   <div>Email: <input value={editValue.email} onChange={e => setEditValue({ ...editValue, email: e.target.value })} /></div>
-                  <button onClick={handleSave}>Save</button>
                   <button onClick={handleCancel}>Cancel</button>
                 </>
               ) : (
@@ -106,7 +109,6 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
                     value={editValue}
                     onChange={e => setEditValue(e.target.value)}
                   />
-                  <button onClick={handleSave}>Save</button>
                   <button onClick={handleCancel}>Cancel</button>
                 </>
               ) : (
@@ -133,7 +135,6 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
                       placeholder={`Skill ${i+1}`}
                     />
                   ))}
-                  <button onClick={handleSave}>Save</button>
                   <button onClick={handleCancel}>Cancel</button>
                 </>
               ) : (
@@ -164,7 +165,6 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
                       placeholder={`Skill ${i+1}`}
                     />
                   ))}
-                  <button onClick={handleSave}>Save</button>
                   <button onClick={handleCancel}>Cancel</button>
                 </>
               ) : (
@@ -186,7 +186,6 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
               {editField === "location" ? (
                 <>
                   <input value={editValue} onChange={e => setEditValue(e.target.value)} />
-                  <button onClick={handleSave}>Save</button>
                   <button onClick={handleCancel}>Cancel</button>
                 </>
               ) : (
@@ -202,7 +201,6 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
               {editField === "availability" ? (
                 <>
                   <input value={editValue} onChange={e => setEditValue(e.target.value)} />
-                  <button onClick={handleSave}>Save</button>
                   <button onClick={handleCancel}>Cancel</button>
                 </>
               ) : (
@@ -218,7 +216,6 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
               {editField === "learning_style" ? (
                 <>
                   <input value={editValue} onChange={e => setEditValue(e.target.value)} />
-                  <button onClick={handleSave}>Save</button>
                   <button onClick={handleCancel}>Cancel</button>
                 </>
               ) : (
@@ -235,6 +232,13 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
             </div>
           </div>
         </div>
+        {hasUnsavedChanges && (
+          <div className="profile-save-container">
+            <button className="profile-save-btn" onClick={handleSave}>
+              Save All Changes
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
