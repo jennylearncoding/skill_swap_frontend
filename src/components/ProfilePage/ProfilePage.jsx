@@ -47,11 +47,18 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
       } else {
         payload[editField] = editValue;
       }
-      const res = await axios.patch(`${API_URL}/profile/${user.id}`, payload);
+      
+      console.log('Sending PATCH request to:', `${API_URL}/profiles/${user.id}`);
+      console.log('Payload:', payload);
+      
+      const res = await axios.patch(`${API_URL}/profiles/${user.id}`, payload);
+      console.log('Response:', res.data);
+      
       onSave(res.data);
       setEditField(null);
       setEditValue("");
     } catch (err) {
+      console.error('Error details:', err);
       alert("Failed to update profile.");
     }
   };
