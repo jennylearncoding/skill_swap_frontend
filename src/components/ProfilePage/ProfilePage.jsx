@@ -8,7 +8,7 @@ import { API_URL } from "../../App";
 const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
 
   const [editField, setEditField] = useState(null);
-  const [editValue, setEditValue] = useState("");
+  const [editValues, setEditValues] = useState({});
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
 
@@ -18,15 +18,24 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
     setEditField(field);
     setHasUnsavedChanges(true);
     if (field === "user_info") {
-      setEditValue({
-        username: user.username || "",
-        pronouns: user.pronouns || "",
-        email: user.email || ""
-      });
+      setEditValues(prev => ({
+        ...prev,
+        [field]: {
+          username: user.username || "",
+          pronouns: user.pronouns || "",
+          email: user.email || ""
+        }
+      }));
     } else if (field === "skills_to_learn" || field === "skills_to_offer") {
-      setEditValue([...(user[field] || []), "", "", ""].slice(0,3));
+      setEditValues(prev => ({
+        ...prev,
+        [field]: [...(user[field] || []), "", "", ""].slice(0,3)
+      }));
     } else {
-      setEditValue(user[field] || "");
+      setEditValues(prev => ({
+        ...prev,
+        [field]: user[field] || ""
+      }));
     }
   };
 
@@ -35,20 +44,24 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
   // Handle save: update profile field via API and update parent state
   const handleSave = async () => {
     try {
-      let value = editValue;
       let payload = {};
-      if (editField === "skills_to_learn" || editField === "skills_to_offer") {
-        value = editValue.map(s => s.trim()).filter(Boolean).slice(0,3);
-        payload[editField] = value;
-      } else if (editField === "user_info") {
-        payload = {
-          username: editValue.username,
-          pronouns: editValue.pronouns,
-          email: editValue.email
-        };
-      } else {
-        payload[editField] = editValue;
-      }
+      
+      // Build payload from all edited values
+      Object.keys(editValues).forEach(field => {
+        if (field === "skills_to_learn" || field === "skills_to_offer") {
+          const value = editValues[field].map(s => s.trim()).filter(Boolean).slice(0,3);
+          payload[field] = value;
+        } else if (field === "user_info") {
+          payload = {
+            ...payload,
+            username: editValues[field].username,
+            pronouns: editValues[field].pronouns,
+            email: editValues[field].email
+          };
+        } else {
+          payload[field] = editValues[field];
+        }
+      });
       
       console.log('Sending PATCH request to:', `${API_URL}/profiles/${user.id}`);
       console.log('Payload:', payload);
@@ -58,7 +71,7 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
       
       onSave(res.data);
       setEditField(null);
-      setEditValue("");
+      setEditValues({});
       setHasUnsavedChanges(false);
     } catch (err) {
       console.error('Error details:', err);
@@ -69,7 +82,7 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
   // Handle cancel: reset edit state
   const handleCancel = () => {
     setEditField(null);
-    setEditValue("");
+    setEditValues({});
     setHasUnsavedChanges(false);
   };
 
@@ -84,9 +97,9 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
             <div className="profile-section-content">
               {editField === "user_info" ? (
                 <>
-                  <div>Your Name: <input value={editValue.username} onChange={e => setEditValue({ ...editValue, username: e.target.value })} /></div>
-                  <div>Pronouns: <input value={editValue.pronouns} onChange={e => setEditValue({ ...editValue, pronouns: e.target.value })} /></div>
-                  <div>Email: <input value={editValue.email} onChange={e => setEditValue({ ...editValue, email: e.target.value })} /></div>
+                  <div>Your Name: <input value={editValues.user_info?.username || ""} onChange={e => setEditValues(prev => ({ ...prev, user_info: { ...prev.user_info, username: e.target.value } }))} /></div>
+                  <div>Pronouns: <input value={editValues.user_info?.pronouns || ""} onChange={e => setEditValues(prev => ({ ...prev, user_info: { ...prev.user_info, pronouns: e.target.value } }))} /></div>
+                  <div>Email: <input value={editValues.user_info?.email || ""} onChange={e => setEditValues(prev => ({ ...prev, user_info: { ...prev.user_info, email: e.target.value } }))} /></div>
                   <button onClick={handleCancel}>Cancel</button>
                 </>
               ) : (
@@ -106,8 +119,8 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
               {editField === "bio" ? (
                 <>
                   <textarea
-                    value={editValue}
-                    onChange={e => setEditValue(e.target.value)}
+                    value={editValues.bio || ""}
+                    onChange={e => setEditValues(prev => ({ ...prev, bio: e.target.value }))}
                   />
                   <button onClick={handleCancel}>Cancel</button>
                 </>
@@ -126,11 +139,11 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
                   {[0,1,2].map(i => (
                     <input
                       key={i}
-                      value={editValue[i] || ""}
+                      value={editValues.skills_to_learn?.[i] || ""}
                       onChange={e => {
-                        const newSkills = [...editValue];
+                        const newSkills = [...(editValues.skills_to_learn || [])];
                         newSkills[i] = e.target.value;
-                        setEditValue(newSkills);
+                        setEditValues(prev => ({ ...prev, skills_to_learn: newSkills }));
                       }}
                       placeholder={`Skill ${i+1}`}
                     />
@@ -156,11 +169,11 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
                   {[0,1,2].map(i => (
                     <input
                       key={i}
-                      value={editValue[i] || ""}
+                      value={editValues.skills_to_offer?.[i] || ""}
                       onChange={e => {
-                        const newSkills = [...editValue];
+                        const newSkills = [...(editValues.skills_to_offer || [])];
                         newSkills[i] = e.target.value;
-                        setEditValue(newSkills);
+                        setEditValues(prev => ({ ...prev, skills_to_offer: newSkills }));
                       }}
                       placeholder={`Skill ${i+1}`}
                     />
@@ -185,7 +198,7 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
             <div className="profile-section-content">
               {editField === "location" ? (
                 <>
-                  <input value={editValue} onChange={e => setEditValue(e.target.value)} />
+                  <input value={editValues.location || ""} onChange={e => setEditValues(prev => ({ ...prev, location: e.target.value }))} />
                   <button onClick={handleCancel}>Cancel</button>
                 </>
               ) : (
@@ -200,7 +213,7 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
             <div className="profile-section-content">
               {editField === "availability" ? (
                 <>
-                  <input value={editValue} onChange={e => setEditValue(e.target.value)} />
+                  <input value={editValues.availability || ""} onChange={e => setEditValues(prev => ({ ...prev, availability: e.target.value }))} />
                   <button onClick={handleCancel}>Cancel</button>
                 </>
               ) : (
@@ -215,7 +228,7 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
             <div className="profile-section-content">
               {editField === "learning_style" ? (
                 <>
-                  <input value={editValue} onChange={e => setEditValue(e.target.value)} />
+                  <input value={editValues.learning_style || ""} onChange={e => setEditValues(prev => ({ ...prev, learning_style: e.target.value }))} />
                   <button onClick={handleCancel}>Cancel</button>
                 </>
               ) : (
