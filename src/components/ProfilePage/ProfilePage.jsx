@@ -17,7 +17,7 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
     setEditField(field);
     if (field === "user_info") {
       setEditValue({
-        name: user.username || "",
+        username: user.username || "",
         pronouns: user.pronouns || "",
         email: user.email || ""
       });
@@ -40,14 +40,14 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
         payload[editField] = value;
       } else if (editField === "user_info") {
         payload = {
-          name: editValue.name,
+          username: editValue.username,
           pronouns: editValue.pronouns,
           email: editValue.email
         };
       } else {
         payload[editField] = editValue;
       }
-      const res = await axios.patch(`${API_URL}/profiles/${user.id}`, payload);
+      const res = await axios.patch(`${API_URL}/profile/${user.id}`, payload);
       onSave(res.data);
       setEditField(null);
       setEditValue("");
