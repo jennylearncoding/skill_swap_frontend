@@ -82,13 +82,6 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
 
   return (
     <div className="profile-bg">
-      {!isEditing && !isReadOnly && (
-        <div className="profile-edit-container">
-          <button className="profile-edit-btn" onClick={handleEdit}>
-            Edit Profile
-          </button>
-        </div>
-      )}
       <div className="profile-main">
         <div className="profile-card profile-left">
           <div className="profile-section">
@@ -246,6 +239,13 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
             </button>
             <button className="profile-cancel-btn" onClick={handleCancel}>
               Cancel
+            </button>
+          </div>
+        )}
+        {!isEditing && !isReadOnly && (
+          <div className="profile-edit-container">
+            <button className="profile-edit-btn" onClick={handleEdit}>
+              Edit Profile
             </button>
           </div>
         )}
