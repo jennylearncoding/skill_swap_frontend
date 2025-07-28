@@ -7,36 +7,30 @@ import { API_URL } from "../../App";
 // Handles avatar upload, field editing, and profile section rendering
 const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
 
-  const [editField, setEditField] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
   const [editValues, setEditValues] = useState({});
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
 
 
-  // Handle edit button: set the field to be edited and initialize edit value
-  const handleEdit = (field) => {
-    setEditField(field);
+  // Handle global edit button: enable editing for all fields
+  const handleEdit = () => {
+    setIsEditing(true);
     setHasUnsavedChanges(true);
-    if (field === "user_info") {
-      setEditValues(prev => ({
-        ...prev,
-        [field]: {
-          username: user.username || "",
-          pronouns: user.pronouns || "",
-          email: user.email || ""
-        }
-      }));
-    } else if (field === "skills_to_learn" || field === "skills_to_offer") {
-      setEditValues(prev => ({
-        ...prev,
-        [field]: [...(user[field] || []), "", "", ""].slice(0,3)
-      }));
-    } else {
-      setEditValues(prev => ({
-        ...prev,
-        [field]: user[field] || ""
-      }));
-    }
+    // Initialize all edit values
+    setEditValues({
+      user_info: {
+        username: user.username || "",
+        pronouns: user.pronouns || "",
+        email: user.email || ""
+      },
+      bio: user.bio || "",
+      skills_to_learn: [...(user.skills_to_learn || []), "", "", ""].slice(0,3),
+      skills_to_offer: [...(user.skills_to_offer || []), "", "", ""].slice(0,3),
+      location: user.location || "",
+      availability: user.availability || "",
+      learning_style: user.learning_style || ""
+    });
   };
 
 
@@ -70,7 +64,7 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
       console.log('Response:', res.data);
       
       onSave(res.data);
-      setEditField(null);
+      setIsEditing(false);
       setEditValues({});
       setHasUnsavedChanges(false);
     } catch (err) {
@@ -81,26 +75,32 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
 
   // Handle cancel: reset edit state
   const handleCancel = () => {
-    setEditField(null);
+    setIsEditing(false);
     setEditValues({});
     setHasUnsavedChanges(false);
   };
 
   return (
     <div className="profile-bg">
+      {!isEditing && !isReadOnly && (
+        <div className="profile-edit-container">
+          <button className="profile-edit-btn" onClick={handleEdit}>
+            Edit Profile
+          </button>
+        </div>
+      )}
       <div className="profile-main">
         <div className="profile-card profile-left">
           <div className="profile-section">
             <div className="profile-section-header">
-              User Info {(!isReadOnly && editField !== "user_info") && (<button className="profile-edit-btn" onClick={() => handleEdit("user_info")}>Edit</button>)}
+              User Info
             </div>
             <div className="profile-section-content">
-              {editField === "user_info" ? (
+              {isEditing ? (
                 <>
                   <div>Your Name: <input value={editValues.user_info?.username || ""} onChange={e => setEditValues(prev => ({ ...prev, user_info: { ...prev.user_info, username: e.target.value } }))} /></div>
                   <div>Pronouns: <input value={editValues.user_info?.pronouns || ""} onChange={e => setEditValues(prev => ({ ...prev, user_info: { ...prev.user_info, pronouns: e.target.value } }))} /></div>
                   <div>Email: <input value={editValues.user_info?.email || ""} onChange={e => setEditValues(prev => ({ ...prev, user_info: { ...prev.user_info, email: e.target.value } }))} /></div>
-                  <button onClick={handleCancel}>Cancel</button>
                 </>
               ) : (
                 <>
@@ -113,16 +113,15 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
           </div>
           <div className="profile-section">
             <div className="profile-section-header">
-              About Me {(!isReadOnly && editField !== "bio") && (<button className="profile-edit-btn" onClick={() => handleEdit("bio")}>Edit</button>)}
+              About Me
             </div>
             <div className="profile-section-content">
-              {editField === "bio" ? (
+              {isEditing ? (
                 <>
                   <textarea
                     value={editValues.bio || ""}
                     onChange={e => setEditValues(prev => ({ ...prev, bio: e.target.value }))}
                   />
-                  <button onClick={handleCancel}>Cancel</button>
                 </>
               ) : (
                 <div>{user.bio || "Not set"}</div>
@@ -131,10 +130,10 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
           </div>
           <div className="profile-section">
             <div className="profile-section-header">
-              Want to Learn {(!isReadOnly && editField !== "skills_to_learn") && (<button className="profile-edit-btn" onClick={() => handleEdit("skills_to_learn")}>Edit</button>)}
+              Want to Learn
             </div>
             <div className="profile-section-content">
-              {editField === "skills_to_learn" ? (
+              {isEditing ? (
                 <>
                   {[0,1,2].map(i => (
                     <input
@@ -148,7 +147,6 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
                       placeholder={`Skill ${i+1}`}
                     />
                   ))}
-                  <button onClick={handleCancel}>Cancel</button>
                 </>
               ) : (
                 (user.skills_to_learn && user.skills_to_learn.length > 0)
@@ -161,10 +159,10 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
           </div>
           <div className="profile-section">
             <div className="profile-section-header">
-              Skill to Offer {(!isReadOnly && editField !== "skills_to_offer") && (<button className="profile-edit-btn" onClick={() => handleEdit("skills_to_offer")}>Edit</button>)}
+              Skill to Offer
             </div>
             <div className="profile-section-content">
-              {editField === "skills_to_offer" ? (
+              {isEditing ? (
                 <>
                   {[0,1,2].map(i => (
                     <input
@@ -178,7 +176,6 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
                       placeholder={`Skill ${i+1}`}
                     />
                   ))}
-                  <button onClick={handleCancel}>Cancel</button>
                 </>
               ) : (
                 (user.skills_to_offer && user.skills_to_offer.length > 0)
@@ -193,13 +190,12 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
         <div className="profile-card profile-right">
           <div className="profile-section">
             <div className="profile-section-header">
-              Location {(!isReadOnly && editField !== "location") && (<button className="profile-edit-btn" onClick={() => handleEdit("location")}>Edit</button>)}
+              Location
             </div>
             <div className="profile-section-content">
-              {editField === "location" ? (
+              {isEditing ? (
                 <>
                   <input value={editValues.location || ""} onChange={e => setEditValues(prev => ({ ...prev, location: e.target.value }))} />
-                  <button onClick={handleCancel}>Cancel</button>
                 </>
               ) : (
                 user.location || "Not set"
@@ -208,13 +204,12 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
           </div>
           <div className="profile-section">
             <div className="profile-section-header">
-              Availability {(!isReadOnly && editField !== "availability") && (<button className="profile-edit-btn" onClick={() => handleEdit("availability")}>Edit</button>)}
+              Availability
             </div>
             <div className="profile-section-content">
-              {editField === "availability" ? (
+              {isEditing ? (
                 <>
                   <input value={editValues.availability || ""} onChange={e => setEditValues(prev => ({ ...prev, availability: e.target.value }))} />
-                  <button onClick={handleCancel}>Cancel</button>
                 </>
               ) : (
                 user.availability || "Not set"
@@ -223,13 +218,12 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
           </div>
           <div className="profile-section">
             <div className="profile-section-header">
-              Learning Style {(!isReadOnly && editField !== "learning_style") && (<button className="profile-edit-btn" onClick={() => handleEdit("learning_style")}>Edit</button>)}
+              Learning Style
             </div>
             <div className="profile-section-content">
-              {editField === "learning_style" ? (
+              {isEditing ? (
                 <>
                   <input value={editValues.learning_style || ""} onChange={e => setEditValues(prev => ({ ...prev, learning_style: e.target.value }))} />
-                  <button onClick={handleCancel}>Cancel</button>
                 </>
               ) : (
                 user.learning_style || "Not set"
@@ -245,10 +239,13 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
             </div>
           </div>
         </div>
-        {hasUnsavedChanges && (
+        {isEditing && (
           <div className="profile-save-container">
             <button className="profile-save-btn" onClick={handleSave}>
               Save All Changes
+            </button>
+            <button className="profile-cancel-btn" onClick={handleCancel}>
+              Cancel
             </button>
           </div>
         )}
