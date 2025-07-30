@@ -11,8 +11,6 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
   const [editValues, setEditValues] = useState({});
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
-
-
   // Handle global edit button: enable editing for all fields
   const handleEdit = () => {
     setIsEditing(true);
@@ -25,15 +23,13 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
         email: user.email || ""
       },
       bio: user.bio || "",
-      skills_to_learn: [...(user.skills_to_learn || []), "", "", ""].slice(0,3),
-      skills_to_offer: [...(user.skills_to_offer || []), "", "", ""].slice(0,3),
+      skills_to_learn: [...(user.userWants?.map(s => s.skillName) || []), "", "", ""].slice(0,3),
+      skills_to_offer: [...(user.userOffers?.map(s => s.skillName) || []), "", "", ""].slice(0,3),
       location: user.location || "",
       availability: user.availability || "",
       learning_style: user.learning_style || ""
     });
   };
-
-
 
   // Handle save: update profile field via API and update parent state
   const handleSave = async () => {
@@ -42,9 +38,14 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
       
       // Build payload from all edited values
       Object.keys(editValues).forEach(field => {
-        if (field === "skills_to_learn" || field === "skills_to_offer") {
-          const value = editValues[field].map(s => s.trim()).filter(Boolean).slice(0,3);
-          payload[field] = value;
+        if (field === "skills_to_learn") {
+          // Convert skills_to_learn array to userWants format
+          const skills = editValues[field].map(s => s.trim()).filter(Boolean).slice(0,3);
+          payload.userWants = skills.map(skillName => ({ skillName }));
+        } else if (field === "skills_to_offer") {
+          // Convert skills_to_offer array to userOffers format
+          const skills = editValues[field].map(s => s.trim()).filter(Boolean).slice(0,3);
+          payload.userOffers = skills.map(skillName => ({ skillName }));
         } else if (field === "user_info") {
           payload = {
             ...payload,
@@ -142,9 +143,9 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
                   ))}
                 </>
               ) : (
-                (user.skills_to_learn && user.skills_to_learn.length > 0)
-                  ? user.skills_to_learn.map(skill => (
-                      <span className="profile-skill" key={skill}>{skill}</span>
+                (user.userWants && user.userWants.length > 0)
+                  ? user.userWants.map(skill => (
+                      <span className="profile-skill" key={skill.skillName}>{skill.skillName}</span>
                     ))
                   : "Not set"
               )}
@@ -171,9 +172,9 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
                   ))}
                 </>
               ) : (
-                (user.skills_to_offer && user.skills_to_offer.length > 0)
-                  ? user.skills_to_offer.map(skill => (
-                      <span className="profile-skill" key={skill}>{skill}</span>
+                (user.userOffers && user.userOffers.length > 0)
+                  ? user.userOffers.map(skill => (
+                      <span className="profile-skill" key={skill.skillName}>{skill.skillName}</span>
                     ))
                   : "Not set"
               )}
