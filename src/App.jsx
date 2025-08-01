@@ -5,7 +5,7 @@ import ProfilePage from "./components/ProfilePage/ProfilePage";
 import LandingPage from "./components/LandingPage/LandingPage";
 import Navigation from "./components/Navigation/Navigation";
 
-export const API_URL = process.env.REACT_APP_API_URL || "https://skill-swap-backend-35l1.onrender.com";
+export const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
 
 // Main application component for Skill Exchange App
 // Handles global state, navigation, and API integration
