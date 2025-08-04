@@ -10,43 +10,8 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editValues, setEditValues] = useState({});
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const [skills, setSkills] = useState([]);
 
-  // Fetch skills from backend
-  useEffect(() => {
-    const fetchSkills = async () => {
-      try {
-        const response = await axios.get(`${API_URL}/skills`);
-        setSkills(response.data);
-      } catch (error) {
-        console.error("Error fetching skills:", error);
-        // Fallback to demo skills if backend is not available
-        setSkills([
-          { id: 1, name: "Python", category: "Programming" },
-          { id: 2, name: "JavaScript", category: "Programming" },
-          { id: 3, name: "Guitar", category: "Music" },
-          { id: 4, name: "Painting", category: "Art" },
-          { id: 5, name: "Cooking", category: "Culinary" },
-          { id: 6, name: "Photography", category: "Art" },
-          { id: 7, name: "Yoga", category: "Fitness" },
-          { id: 8, name: "Spanish", category: "Language" }
-        ]);
-      }
-    };
-    fetchSkills();
-  }, []);
 
-  // Helper function to get skill name by ID
-  const getSkillNameById = (skillId) => {
-    const skill = skills.find(s => s.id === skillId);
-    return skill ? skill.name : `Skill ${skillId}`;
-  };
-
-  // Helper function to get skill ID by name
-  const getSkillIdByName = (skillName) => {
-    const skill = skills.find(s => s.name.toLowerCase() === skillName.toLowerCase());
-    return skill ? skill.id : null;
-  };
 
   // Handle global edit button: enable editing for all fields
   const handleEdit = () => {
@@ -61,11 +26,11 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
       },
       bio: user.bio || "",
       skills_to_learn: [
-        ...(user.skills_to_learn || user.userWants?.map(want => getSkillNameById(want.skill_id)) || []), 
+        ...(user.userWants?.map(s => s.skillName) || user.userWants?.map(want => getSkillNameById(want.skill_id)) || []), 
         "", "", ""
       ].slice(0,3),
       skills_to_offer: [
-        ...(user.skills_to_offer || user.userOffers?.map(offer => getSkillNameById(offer.skill_id)) || []), 
+        ...(user.userOffers?.map(s => s.skillName) || user.userOffers?.map(offer => getSkillNameById(offer.skill_id)) || []), 
         "", "", ""
       ].slice(0,3),
       location: user.location || "",
@@ -74,8 +39,6 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
     });
   };
 
-
-
   // Handle save: update profile field via API and update parent state
   const handleSave = async () => {
     try {
@@ -83,28 +46,9 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
       
       // Build payload from all edited values
       Object.keys(editValues).forEach(field => {
-        if (field === "skills_to_learn") {
-          // Convert skills_to_learn to userWants format
-          const skillNames = editValues[field].map(s => s.trim()).filter(Boolean).slice(0,3);
-          payload.userWants = skillNames.map(skillName => {
-            const skillId = getSkillIdByName(skillName);
-            return {
-              id: null, // New entry
-              skill_id: skillId || 1, // Use found skill ID or default to 1
-              user: null // Will be set by backend
-            };
-          });
-        } else if (field === "skills_to_offer") {
-          // Convert skills_to_offer to userOffers format
-          const skillNames = editValues[field].map(s => s.trim()).filter(Boolean).slice(0,3);
-          payload.userOffers = skillNames.map(skillName => {
-            const skillId = getSkillIdByName(skillName);
-            return {
-              id: null, // New entry
-              skill_id: skillId || 1, // Use found skill ID or default to 1
-              user: null // Will be set by backend
-            };
-          });
+        if (field === "skills_to_learn" || field === "skills_to_offer") {
+          const value = editValues[field].map(s => s.trim()).filter(Boolean).slice(0,3);
+          payload[field] = value;
         } else if (field === "user_info") {
           payload = {
             ...payload,
@@ -206,11 +150,7 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
                   ? user.skills_to_learn.map(skill => (
                       <span className="profile-skill" key={skill}>{skill}</span>
                     ))
-                  : (user.userWants && user.userWants.length > 0)
-                    ? user.userWants.map(want => (
-                        <span className="profile-skill" key={want.id}>Skill ID: {want.skill_id}</span>
-                      ))
-                    : "Not set"
+                  : "Not set"
               )}
             </div>
           </div>
@@ -239,11 +179,7 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
                   ? user.skills_to_offer.map(skill => (
                       <span className="profile-skill" key={skill}>{skill}</span>
                     ))
-                  : (user.userOffers && user.userOffers.length > 0)
-                    ? user.userOffers.map(offer => (
-                        <span className="profile-skill" key={offer.id}>Skill ID: {offer.skill_id}</span>
-                      ))
-                    : "Not set"
+                  : "Not set"
               )}
             </div>
           </div>
