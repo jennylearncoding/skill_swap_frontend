@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import "./ProfilePage.css";
 import { API_URL } from "../../App";
@@ -9,14 +9,13 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
 
   const [isEditing, setIsEditing] = useState(false);
   const [editValues, setEditValues] = useState({});
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
 
 
 
   // Handle global edit button: enable editing for all fields
   const handleEdit = () => {
     setIsEditing(true);
-    setHasUnsavedChanges(true);
     // Initialize all edit values
     setEditValues({
       user_info: {
@@ -26,11 +25,11 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
       },
       bio: user.bio || "",
       skills_to_learn: [
-        ...(user.userWants?.map(s => s.skillName) || user.userWants?.map(want => getSkillNameById(want.skill_id)) || []), 
+        ...(user.userWants?.map(s => s.skillName) || []), 
         "", "", ""
       ].slice(0,3),
       skills_to_offer: [
-        ...(user.userOffers?.map(s => s.skillName) || user.userOffers?.map(offer => getSkillNameById(offer.skill_id)) || []), 
+        ...(user.userOffers?.map(s => s.skillName) || []), 
         "", "", ""
       ].slice(0,3),
       location: user.location || "",
@@ -70,7 +69,6 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
       onSave(res.data);
       setIsEditing(false);
       setEditValues({});
-      setHasUnsavedChanges(false);
     } catch (err) {
       console.error('Error details:', err);
       alert("Failed to update profile.");
@@ -81,7 +79,6 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
   const handleCancel = () => {
     setIsEditing(false);
     setEditValues({});
-    setHasUnsavedChanges(false);
   };
 
   return (
