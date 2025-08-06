@@ -18,9 +18,9 @@ const App = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        console.log("Attempting to fetch user from:", `${API_URL}/profiles/1`);
+        console.log("Attempting to fetch user from:", `${API_URL}/profiles/52`);
         // For now, we'll use a demo user ID. In a real app, this would come from authentication
-        const response = await axios.get(`${API_URL}/profiles/1`);
+        const response = await axios.get(`${API_URL}/profiles/52`);
         console.log("User data received:", response.data);
         setUser(response.data);
       } catch (error) {
