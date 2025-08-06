@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./MatchSuggestionsPage.css";
+import "./MatchingSuggestions.css";
 import MatchCard from "../MatchCard/MatchCard";
 import UserDropdown from "../UserDropdown/UserDropdown";
 import ProfilePage from "../ProfilePage/ProfilePage";
@@ -72,10 +72,6 @@ const MatchSuggestionsPage = ({
   return (
     <div className="match-bg">
       <div className="match-header">
-        <span className="match-logo" onClick={onNavigateProfile} style={{ cursor: "pointer" }}>
-          Skill Exchange App
-        </span>
-        <UserDropdown user={user} onNavigate={onNavigate} onLogout={onLogout} />
       </div>
       <div className="match-title">
         <h1 className="match-suggestions-title">Match Suggestions</h1>
