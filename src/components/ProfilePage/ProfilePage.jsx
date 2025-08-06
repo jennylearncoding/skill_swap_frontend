@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import "./ProfilePage.css";
 import { API_URL } from "../../App";
@@ -7,29 +7,6 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editValues, setEditValues] = useState({});
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [availableSkills, setAvailableSkills] = useState([]); 
-
-  useEffect(() => {
-    const fetchSkills = async () => {
-      try {
-        const response = await axios.get(`${API_URL}/skills`);
-        setAvailableSkills(response.data);
-      } catch (error) {
-        console.error('Error fetching skills:', error);
-      }
-    };
-    
-    fetchSkills();
-  }, []);
-
-  const getSkillIdByName = (skillName) => {
-    const skill = availableSkills.find(s => s.name === skillName);
-    return skill ? skill.id : null;
-  };
-
-  const getSkillById = (skillId) => {
-    return availableSkills.find(s => s.id === skillId);
-  };
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -41,8 +18,8 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
         email: user.email || ""
       },
       bio: user.bio || "",
-      skill_to_learn: user.userWant?.skill?.id || getSkillIdByName(user.userWant?.skillName) || "", // ✅ Single value
-      skill_to_offer: user.userOffer?.skill?.id || getSkillIdByName(user.userOffer?.skillName) || "", // ✅ Single value
+      skill_to_learn: user.userWant?.skillName || "", 
+      skill_to_offer: user.userOffer?.skillName || "", 
       location: user.location || "",
       availability: user.availability || "",
       learning_style: user.learning_style || ""
@@ -54,17 +31,17 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
       let payload = {};
       
       Object.keys(editValues).forEach(field => {
-        if (field === "skill_to_learn") { 
-          const skillId = editValues[field]; 
-          if (skillId) {
-            payload.userWant = { skill: { id: parseInt(skillId) } };
+        if (field === "skill_to_learn") {
+          const skillName = editValues[field]?.trim();
+          if (skillName) {
+            payload.userWant = { skillName }; 
           } else {
             payload.userWant = null;
           }
-        } else if (field === "skill_to_offer") { 
-          const skillId = editValues[field]; 
-          if (skillId) {
-            payload.userOffer = { skill: { id: parseInt(skillId) } };
+        } else if (field === "skill_to_offer") {
+          const skillName = editValues[field]?.trim();
+          if (skillName) {
+            payload.userOffer = { skillName }; 
           } else {
             payload.userOffer = null;
           }
@@ -144,29 +121,23 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
             </div>
           </div>
 
+          {/* ✅ FIXED: Input field for skill to learn */}
           <div className="profile-section">
             <div className="profile-section-header">Skill to Learn</div>
             <div className="profile-section-content">
               {isEditing ? (
-                <select
-                  value={editValues.skill_to_learn || ""} 
+                <input
+                  type="text"
+                  value={editValues.skill_to_learn || ""}
                   onChange={e => setEditValues(prev => ({ 
                     ...prev, 
                     skill_to_learn: e.target.value 
                   }))}
-                >
-                  <option value="">Select a skill to learn...</option>
-                  {availableSkills.map(skill => (
-                    <option key={skill.id} value={skill.id}>
-                      {skill.name} ({skill.category})
-                    </option>
-                  ))}
-                </select>
+                  placeholder="Enter skill you want to learn"
+                />
               ) : (
-                user.userWant?.skillName || user.userWant?.skill?.name ? (
-                  <span className="profile-skill">
-                    {user.userWant?.skillName || user.userWant?.skill?.name}
-                  </span>
+                user.userWant?.skillName ? (
+                  <span className="profile-skill">{user.userWant.skillName}</span>
                 ) : "Not set"
               )}
             </div>
@@ -176,25 +147,18 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
             <div className="profile-section-header">Skill to Offer</div>
             <div className="profile-section-content">
               {isEditing ? (
-                <select
-                  value={editValues.skill_to_offer || ""} 
+                <input
+                  type="text"
+                  value={editValues.skill_to_offer || ""}
                   onChange={e => setEditValues(prev => ({ 
                     ...prev, 
-                    skill_to_offer: e.target.value
+                    skill_to_offer: e.target.value 
                   }))}
-                >
-                  <option value="">Select a skill to offer...</option>
-                  {availableSkills.map(skill => (
-                    <option key={skill.id} value={skill.id}>
-                      {skill.name} ({skill.category})
-                    </option>
-                  ))}
-                </select>
+                  placeholder="Enter skill you can offer"
+                />
               ) : (
-                user.userOffer?.skillName || user.userOffer?.skill?.name ? (
-                  <span className="profile-skill">
-                    {user.userOffer?.skillName || user.userOffer?.skill?.name}
-                  </span>
+                user.userOffer?.skillName ? (
+                  <span className="profile-skill">{user.userOffer.skillName}</span>
                 ) : "Not set"
               )}
             </div>
