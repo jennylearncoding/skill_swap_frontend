@@ -1,23 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./ProfilePage.css";
 import { API_URL } from "../../App";
 
-// Profile page for viewing and editing user information
-// Handles avatar upload, field editing, and profile section rendering
 const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
-
   const [isEditing, setIsEditing] = useState(false);
   const [editValues, setEditValues] = useState({});
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [availableSkills, setAvailableSkills] = useState([]); 
 
+  useEffect(() => {
+    const fetchSkills = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/skills`);
+        setAvailableSkills(response.data);
+      } catch (error) {
+        console.error('Error fetching skills:', error);
+      }
+    };
+    
+    fetchSkills();
+  }, []);
 
+  const getSkillIdByName = (skillName) => {
+    const skill = availableSkills.find(s => s.name === skillName);
+    return skill ? skill.id : null;
+  };
 
+  const getSkillById = (skillId) => {
+    return availableSkills.find(s => s.id === skillId);
+  };
 
-  // Handle global edit button: enable editing for all fields
   const handleEdit = () => {
     setIsEditing(true);
-    // Initialize all edit values
+    
     setEditValues({
       user_info: {
         username: user.username || "",
@@ -25,28 +41,33 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
         email: user.email || ""
       },
       bio: user.bio || "",
-      skills_to_learn: [
-        user.userWant?.skillName || ""
-      ],
-      skills_to_offer: [
-        user.userOffer?.skillName || ""
-      ],
+      skill_to_learn: user.userWant?.skill?.id || getSkillIdByName(user.userWant?.skillName) || "", // ✅ Single value
+      skill_to_offer: user.userOffer?.skill?.id || getSkillIdByName(user.userOffer?.skillName) || "", // ✅ Single value
       location: user.location || "",
       availability: user.availability || "",
       learning_style: user.learning_style || ""
     });
   };
 
-  // Handle save: update profile field via API and update parent state
   const handleSave = async () => {
     try {
       let payload = {};
       
-      // Build payload from all edited values
       Object.keys(editValues).forEach(field => {
-        if (field === "skills_to_learn" || field === "skills_to_offer") {
-          const value = editValues[field].map(s => s.trim()).filter(Boolean).slice(0,1);
-          payload[field] = value;
+        if (field === "skill_to_learn") { 
+          const skillId = editValues[field]; 
+          if (skillId) {
+            payload.userWant = { skill: { id: parseInt(skillId) } };
+          } else {
+            payload.userWant = null;
+          }
+        } else if (field === "skill_to_offer") { 
+          const skillId = editValues[field]; 
+          if (skillId) {
+            payload.userOffer = { skill: { id: parseInt(skillId) } };
+          } else {
+            payload.userOffer = null;
+          }
         } else if (field === "user_info") {
           payload = {
             ...payload,
@@ -70,7 +91,6 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
       setEditValues({});
       setShowConfirmation(true);
       
-      // Hide confirmation message after 3 seconds
       setTimeout(() => {
         setShowConfirmation(false);
       }, 3000);
@@ -80,7 +100,6 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
     }
   };
 
-  // Handle cancel: reset edit state
   const handleCancel = () => {
     setIsEditing(false);
     setEditValues({});
@@ -90,10 +109,9 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
     <div className="profile-bg">
       <div className="profile-main">
         <div className="profile-card profile-left">
+          {/* User Info section */}
           <div className="profile-section">
-            <div className="profile-section-header">
-              User Info
-            </div>
+            <div className="profile-section-header">User Info</div>
             <div className="profile-section-content">
               {isEditing ? (
                 <>
@@ -110,108 +128,106 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
               )}
             </div>
           </div>
+
+          {/* About Me section */}
           <div className="profile-section">
-            <div className="profile-section-header">
-              About Me
-            </div>
+            <div className="profile-section-header">About Me</div>
             <div className="profile-section-content">
               {isEditing ? (
-                <>
-                  <textarea
-                    value={editValues.bio || ""}
-                    onChange={e => setEditValues(prev => ({ ...prev, bio: e.target.value }))}
-                  />
-                </>
+                <textarea
+                  value={editValues.bio || ""}
+                  onChange={e => setEditValues(prev => ({ ...prev, bio: e.target.value }))}
+                />
               ) : (
                 <div>{user.bio || "Not set"}</div>
               )}
             </div>
           </div>
+
           <div className="profile-section">
-            <div className="profile-section-header">
-              Skill to Learn
-            </div>
+            <div className="profile-section-header">Skill to Learn</div>
             <div className="profile-section-content">
               {isEditing ? (
-                <>
-                  <input
-                    value={editValues.skills_to_learn?.[0] || ""}
-                    onChange={e => {
-                      const newSkills = [e.target.value];
-                      setEditValues(prev => ({ ...prev, skills_to_learn: newSkills }));
-                    }}
-                    placeholder="Enter skill you want to learn"
-                  />
-                </>
+                <select
+                  value={editValues.skill_to_learn || ""} 
+                  onChange={e => setEditValues(prev => ({ 
+                    ...prev, 
+                    skill_to_learn: e.target.value 
+                  }))}
+                >
+                  <option value="">Select a skill to learn...</option>
+                  {availableSkills.map(skill => (
+                    <option key={skill.id} value={skill.id}>
+                      {skill.name} ({skill.category})
+                    </option>
+                  ))}
+                </select>
               ) : (
-                user.userWant?.skillName ? (
-                  <span className="profile-skill">{user.userWant.skillName}</span>
+                user.userWant?.skillName || user.userWant?.skill?.name ? (
+                  <span className="profile-skill">
+                    {user.userWant?.skillName || user.userWant?.skill?.name}
+                  </span>
                 ) : "Not set"
               )}
             </div>
           </div>
+
           <div className="profile-section">
-            <div className="profile-section-header">
-              Skill to Offer
-            </div>
+            <div className="profile-section-header">Skill to Offer</div>
             <div className="profile-section-content">
               {isEditing ? (
-                <>
-                  <input
-                    value={editValues.skills_to_offer?.[0] || ""}
-                    onChange={e => {
-                      const newSkills = [e.target.value];
-                      setEditValues(prev => ({ ...prev, skills_to_offer: newSkills }));
-                    }}
-                    placeholder="Enter skill you can offer"
-                  />
-                </>
+                <select
+                  value={editValues.skill_to_offer || ""} 
+                  onChange={e => setEditValues(prev => ({ 
+                    ...prev, 
+                    skill_to_offer: e.target.value
+                  }))}
+                >
+                  <option value="">Select a skill to offer...</option>
+                  {availableSkills.map(skill => (
+                    <option key={skill.id} value={skill.id}>
+                      {skill.name} ({skill.category})
+                    </option>
+                  ))}
+                </select>
               ) : (
-                user.userOffer?.skillName ? (
-                  <span className="profile-skill">{user.userOffer.skillName}</span>
+                user.userOffer?.skillName || user.userOffer?.skill?.name ? (
+                  <span className="profile-skill">
+                    {user.userOffer?.skillName || user.userOffer?.skill?.name}
+                  </span>
                 ) : "Not set"
               )}
             </div>
           </div>
         </div>
+
+        {/* Right card */}
         <div className="profile-card profile-right">
           <div className="profile-section">
-            <div className="profile-section-header">
-              Location
-            </div>
+            <div className="profile-section-header">Location</div>
             <div className="profile-section-content">
               {isEditing ? (
-                <>
-                  <input value={editValues.location || ""} onChange={e => setEditValues(prev => ({ ...prev, location: e.target.value }))} />
-                </>
+                <input value={editValues.location || ""} onChange={e => setEditValues(prev => ({ ...prev, location: e.target.value }))} />
               ) : (
                 user.location || "Not set"
               )}
             </div>
           </div>
           <div className="profile-section">
-            <div className="profile-section-header">
-              Availability
-            </div>
+            <div className="profile-section-header">Availability</div>
             <div className="profile-section-content">
               {isEditing ? (
-                <>
-                  <input value={editValues.availability || ""} onChange={e => setEditValues(prev => ({ ...prev, availability: e.target.value }))} />
-                </>
+                <input value={editValues.availability || ""} onChange={e => setEditValues(prev => ({ ...prev, availability: e.target.value }))} />
               ) : (
                 user.availability || "Not set"
               )}
             </div>
           </div>
           <div className="profile-section">
-            <div className="profile-section-header">
-              Learning Style
-            </div>
+            <div className="profile-section-header">Learning Style</div>
             <div className="profile-section-content">
               {isEditing ? (
-                <>
-                  <input value={editValues.learning_style || ""} onChange={e => setEditValues(prev => ({ ...prev, learning_style: e.target.value }))} />
-                </>
+                <input value={editValues.learning_style || ""} onChange={e => setEditValues(prev => ({ ...prev, learning_style: e.target.value }))} />
               ) : (
                 user.learning_style || "Not set"
               )}
@@ -226,6 +242,8 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
             </div>
           </div>
         </div>
+
+        {/* Confirmation and buttons */}
         {showConfirmation && (
           <div className="profile-confirmation">
             <div className="confirmation-message">
