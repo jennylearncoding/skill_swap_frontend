@@ -1,12 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./ProfilePage.css";
 import { API_URL } from "../../App";
+import { useAuth } from "../../context/AuthContext";
 
-const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
+const ProfilePage = ({ onNavigate, isReadOnly }) => {
+  const { currentUser, updateUser, logout } = useAuth();
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [editValues, setEditValues] = useState({});
   const [showConfirmation, setShowConfirmation] = useState(false);
+
+  // Redirect to landing page if not logged in
+  useEffect(() => {
+    if (!currentUser) {
+      onNavigate('landing');
+      return;
+    }
+
+    // Fetch full user profile data
+    const fetchUserProfile = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/profiles/${currentUser.id}`);
+        setUser(response.data);
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+        // If profile fetch fails, use currentUser data
+        setUser(currentUser);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserProfile();
+  }, [currentUser, onNavigate]);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -63,7 +91,8 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
       const res = await axios.patch(`${API_URL}/profiles/${user.id}`, payload);
       console.log('Response:', res.data);
       
-      onSave(res.data);
+      setUser(res.data);
+      updateUser(res.data); // Update auth context
       setIsEditing(false);
       setEditValues({});
       setShowConfirmation(true);
@@ -81,6 +110,16 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
     setIsEditing(false);
     setEditValues({});
   };
+
+  // Show loading state
+  if (loading) {
+    return <div style={{ textAlign: 'center', padding: '50px' }}>Loading profile...</div>;
+  }
+
+  // Show message if no user data
+  if (!user) {
+    return <div style={{ textAlign: 'center', padding: '50px' }}>Please log in to view your profile.</div>;
+  }
 
   return (
     <div className="profile-bg">

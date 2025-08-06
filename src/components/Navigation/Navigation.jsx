@@ -1,7 +1,15 @@
 import React from "react";
 import "./Navigation.css";
+import { useAuth } from "../../context/AuthContext";
 
 const Navigation = ({ currentPage, onNavigate }) => {
+  const { currentUser, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    onNavigate("landing");
+  };
+
   return (
     <nav className="navigation">
       <div className="nav-container">
@@ -27,6 +35,11 @@ const Navigation = ({ currentPage, onNavigate }) => {
           >
             Match
           </button>
+          {currentUser && (
+            <button className="nav-logout" onClick={handleLogout}>
+              Logout
+            </button>
+          )}
         </div>
       </div>
     </nav>
