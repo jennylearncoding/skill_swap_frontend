@@ -21,6 +21,12 @@ const Navigation = ({ currentPage, onNavigate }) => {
           >
             Profile
           </button>
+          <button 
+            className={`nav-link ${currentPage === "matches" ? "active" : ""}`}
+            onClick={() => onNavigate("matches")}
+          >
+            Match
+          </button>
         </div>
       </div>
     </nav>

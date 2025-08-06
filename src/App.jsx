@@ -4,6 +4,7 @@ import "./App.css";
 import ProfilePage from "./components/ProfilePage/ProfilePage";
 import LandingPage from "./components/LandingPage/LandingPage";
 import Navigation from "./components/Navigation/Navigation";
+import MatchSuggestionsPage from "./components/MatchSuggestionsPage/MatchingSuggestions";
 
 export const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
 
@@ -75,6 +76,14 @@ const App = () => {
         return <LandingPage onNavigate={setCurrentPage} />;
       case "profile":
         return <ProfilePage user={user} onSave={handleProfileSave} />;
+      case "matches":
+        return <MatchSuggestionsPage 
+          user={user} 
+          onNavigate={setCurrentPage}
+          onChat={() => console.log("Chat functionality to be implemented")}
+          onNavigateProfile={() => setCurrentPage("profile")}
+          onLogout={() => console.log("Logout functionality to be implemented")}
+        />;
       default:
         return <LandingPage onNavigate={setCurrentPage} />;
     }
