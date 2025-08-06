@@ -5,7 +5,7 @@ import ProfilePage from "./components/ProfilePage/ProfilePage";
 import LandingPage from "./components/LandingPage/LandingPage";
 import Navigation from "./components/Navigation/Navigation";
 
-export const API_URL = process.env.REACT_APP_API_URL;
+export const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
 
 // Main application component for Skill Exchange App
 // Handles global state, navigation, and API integration
@@ -18,11 +18,15 @@ const App = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
+        console.log("Attempting to fetch user from:", `${API_URL}/profiles/1`);
         // For now, we'll use a demo user ID. In a real app, this would come from authentication
         const response = await axios.get(`${API_URL}/profiles/1`);
+        console.log("User data received:", response.data);
         setUser(response.data);
       } catch (error) {
         console.error("Error fetching user:", error);
+        console.error("API URL being used:", API_URL);
+        console.error("Full error details:", error.response?.status, error.response?.statusText);
         // Fallback to demo data if backend is not available
         setUser({
           id: 1,

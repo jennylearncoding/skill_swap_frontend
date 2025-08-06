@@ -255,3 +255,37 @@
 .profile-cancel-btn:active {
   transform: translateY(0);
 }
+
+/* Confirmation message styles */
+.profile-confirmation {
+  position: fixed;
+  top: 1rem;
+  right: 2rem;
+  z-index: 1001;
+  animation: slideIn 0.3s ease-out;
+}
+
+.confirmation-message {
+  background: #4CAF50;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 20px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0.95;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 0.95;
+    transform: translateX(0);
+  }
+}

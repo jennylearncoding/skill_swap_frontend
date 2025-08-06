@@ -9,6 +9,7 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
 
   const [isEditing, setIsEditing] = useState(false);
   const [editValues, setEditValues] = useState({});
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
 
 
@@ -26,12 +27,12 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
       bio: user.bio || "",
       skills_to_learn: [
         ...(user.userWants?.map(s => s.skillName) || []), 
-        "", "", ""
-      ].slice(0,3),
+        ""
+      ].slice(0,1),
       skills_to_offer: [
         ...(user.userOffers?.map(s => s.skillName) || []), 
-        "", "", ""
-      ].slice(0,3),
+        ""
+      ].slice(0,1),
       location: user.location || "",
       availability: user.availability || "",
       learning_style: user.learning_style || ""
@@ -46,7 +47,7 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
       // Build payload from all edited values
       Object.keys(editValues).forEach(field => {
         if (field === "skills_to_learn" || field === "skills_to_offer") {
-          const value = editValues[field].map(s => s.trim()).filter(Boolean).slice(0,3);
+          const value = editValues[field].map(s => s.trim()).filter(Boolean).slice(0,1);
           payload[field] = value;
         } else if (field === "user_info") {
           payload = {
@@ -69,6 +70,12 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
       onSave(res.data);
       setIsEditing(false);
       setEditValues({});
+      setShowConfirmation(true);
+      
+      // Hide confirmation message after 3 seconds
+      setTimeout(() => {
+        setShowConfirmation(false);
+      }, 3000);
     } catch (err) {
       console.error('Error details:', err);
       alert("Failed to update profile.");
@@ -124,23 +131,19 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
           </div>
           <div className="profile-section">
             <div className="profile-section-header">
-              Want to Learn
+              Skill to Learn
             </div>
             <div className="profile-section-content">
               {isEditing ? (
                 <>
-                  {[0,1,2].map(i => (
-                    <input
-                      key={i}
-                      value={editValues.skills_to_learn?.[i] || ""}
-                      onChange={e => {
-                        const newSkills = [...(editValues.skills_to_learn || [])];
-                        newSkills[i] = e.target.value;
-                        setEditValues(prev => ({ ...prev, skills_to_learn: newSkills }));
-                      }}
-                      placeholder={`Skill ${i+1}`}
-                    />
-                  ))}
+                  <input
+                    value={editValues.skills_to_learn?.[0] || ""}
+                    onChange={e => {
+                      const newSkills = [e.target.value];
+                      setEditValues(prev => ({ ...prev, skills_to_learn: newSkills }));
+                    }}
+                    placeholder="Enter skill you want to learn"
+                  />
                 </>
               ) : (
                 (user.skills_to_learn && user.skills_to_learn.length > 0)
@@ -158,18 +161,14 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
             <div className="profile-section-content">
               {isEditing ? (
                 <>
-                  {[0,1,2].map(i => (
-                    <input
-                      key={i}
-                      value={editValues.skills_to_offer?.[i] || ""}
-                      onChange={e => {
-                        const newSkills = [...(editValues.skills_to_offer || [])];
-                        newSkills[i] = e.target.value;
-                        setEditValues(prev => ({ ...prev, skills_to_offer: newSkills }));
-                      }}
-                      placeholder={`Skill ${i+1}`}
-                    />
-                  ))}
+                  <input
+                    value={editValues.skills_to_offer?.[0] || ""}
+                    onChange={e => {
+                      const newSkills = [e.target.value];
+                      setEditValues(prev => ({ ...prev, skills_to_offer: newSkills }));
+                    }}
+                    placeholder="Enter skill you can offer"
+                  />
                 </>
               ) : (
                 (user.skills_to_offer && user.skills_to_offer.length > 0)
@@ -233,6 +232,13 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
             </div>
           </div>
         </div>
+        {showConfirmation && (
+          <div className="profile-confirmation">
+            <div className="confirmation-message">
+              ✅ Profile updated successfully!
+            </div>
+          </div>
+        )}
         {isEditing && (
           <div className="profile-save-container">
             <button className="profile-save-btn" onClick={handleSave}>
