@@ -26,13 +26,11 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
       },
       bio: user.bio || "",
       skills_to_learn: [
-        ...(user.userWants?.map(s => s.skillName) || []), 
-        ""
-      ].slice(0,1),
+        user.userWant?.skillName || ""
+      ],
       skills_to_offer: [
-        ...(user.userOffers?.map(s => s.skillName) || []), 
-        ""
-      ].slice(0,1),
+        user.userOffer?.skillName || ""
+      ],
       location: user.location || "",
       availability: user.availability || "",
       learning_style: user.learning_style || ""
@@ -146,11 +144,9 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
                   />
                 </>
               ) : (
-                (user.skills_to_learn && user.skills_to_learn.length > 0)
-                  ? user.skills_to_learn.map(skill => (
-                      <span className="profile-skill" key={skill}>{skill}</span>
-                    ))
-                  : "Not set"
+                user.userWant?.skillName ? (
+                  <span className="profile-skill">{user.userWant.skillName}</span>
+                ) : "Not set"
               )}
             </div>
           </div>
@@ -171,11 +167,9 @@ const ProfilePage = ({ user, onSave, onNavigate, isReadOnly }) => {
                   />
                 </>
               ) : (
-                (user.skills_to_offer && user.skills_to_offer.length > 0)
-                  ? user.skills_to_offer.map(skill => (
-                      <span className="profile-skill" key={skill}>{skill}</span>
-                    ))
-                  : "Not set"
+                user.userOffer?.skillName ? (
+                  <span className="profile-skill">{user.userOffer.skillName}</span>
+                ) : "Not set"
               )}
             </div>
           </div>
