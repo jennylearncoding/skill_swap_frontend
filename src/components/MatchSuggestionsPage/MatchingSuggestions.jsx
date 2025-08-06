@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./MatchingSuggestions.css";
 import MatchCard from "../MatchCard/MatchCard";
-import UserDropdown from "../UserDropdown/UserDropdown";
 import ProfilePage from "../ProfilePage/ProfilePage";
 import { API_URL } from "../../App";
 
