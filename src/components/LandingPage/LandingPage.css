@@ -36,6 +36,12 @@
   color: #444;
 }
 
+.landing-actions {
+  margin-top: 2rem;
+}
+
+
+
 .landing-btn {
   background: #f47c4c;
   color: #fff;
@@ -48,10 +54,29 @@
   box-shadow: 3px 3px 0 #ffd6b0;
   margin-bottom: 1rem;
   transition: transform 0.2s ease;
+  min-width: 180px;
+  text-align: center;
 }
 
 .landing-btn:hover {
   transform: translateY(-2px);
+}
+
+.landing-btn.primary {
+  background: #f47c4c;
+  box-shadow: 3px 3px 0 #ffd6b0;
+}
+
+.landing-btn.secondary {
+  background: transparent;
+  color: #f47c4c;
+  border: 2px solid #f47c4c;
+  box-shadow: none;
+}
+
+.landing-btn.secondary:hover {
+  background: #f47c4c;
+  color: white;
 }
 
 .landing-right {

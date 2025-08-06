@@ -53,4 +53,22 @@
   color: #667eea;
   background: #f0f2ff;
   font-weight: 500;
+}
+
+
+
+.nav-logout {
+  background: none;
+  border: none;
+  padding: 12px 24px;
+  font-size: 1.2rem;
+  color: #666;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.nav-logout:hover {
+  color: #667eea;
+  background: #f8f9fa;
 } 
