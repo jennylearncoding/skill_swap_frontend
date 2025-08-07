@@ -209,21 +209,26 @@ const MatchSuggestionsPage = ({
         >{'>'}</button>
       </div>
 
-      {/* AI Status Indicator */}
-      <div className="ai-status-simple">
-        {aiEnabled ? (
-          <p>AI Matching is available</p>
-        ) : (
-          <p>AI Matching Temporarily Unavailable</p>
-        )}
-      </div>
+             {/* AI Status Indicator */}
+       <div className="ai-status-simple">
+          {aiEnabled ? (
+           <p>AI Matching is available</p>
+          ) : (
+           <p>AI Matching Temporarily Unavailable</p>
+         )}
+       </div>
 
-      {/* Chat Card Modal */}
-      {chatUser && (
-        <ChatCard user={chatUser} onClose={() => setChatUser(null)} />
-      )}
-    </div>
-  );
+       {/* AI Disclaimer */}
+       <div className="ai-disclaimer">
+         <p>This app uses AI to suggest matches based only on the skills and interests you provide. It's helpful, not perfect—so use your best judgment when connecting!</p>
+       </div>
+
+       {/* Chat Card Modal */}
+       {chatUser && (
+         <ChatCard user={chatUser} onClose={() => setChatUser(null)} />
+       )}
+     </div>
+   );
 };
 
 export default MatchSuggestionsPage;
