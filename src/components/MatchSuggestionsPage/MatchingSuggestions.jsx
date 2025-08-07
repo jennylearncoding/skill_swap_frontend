@@ -39,8 +39,8 @@ const MatchSuggestionsPage = ({
           const filterTags = data.availableFilterTags || [];
           console.log('Available filter tags:', filterTags);
           setAvailableFilterTags(filterTags);
-          // Initialize with NO filters selected to show all matches by default
-          setActiveFilters([]);
+          // Initialize with all filters selected to show all matches by default
+          setActiveFilters(filterTags);
           // Get the user's want skill for display
           if (user.userWant?.skillName) {
             setUserWantSkill(user.userWant.skillName);
@@ -79,6 +79,8 @@ const MatchSuggestionsPage = ({
   // Apply active filters to matches (show users whose skills match ANY active filter)
   const filteredMatches = activeFilters.length === 0 
     ? matches // If no filters selected, show all matches
+    : activeFilters.length === availableFilterTags.length
+    ? matches // If all filters selected, show all matches (optimization)
     : matches.filter(user => {
         const userOfferTags = user.userOffer?.tags || [];
         const userWantTags = user.userWant?.tags || [];
@@ -169,9 +171,9 @@ const MatchSuggestionsPage = ({
           </div>
         )}
         <p className="match-count">
-          {activeFilters.length === 0 
-            ? `Showing all <strong>${totalMatches}</strong> learning ${totalMatches === 1 ? 'buddy' : 'buddies'}`
-            : `Showing <strong>${filteredMatches.length}</strong> of <strong>${totalMatches}</strong> learning ${totalMatches === 1 ? 'buddy' : 'buddies'}`
+          {activeFilters.length === 0 || activeFilters.length === availableFilterTags.length
+            ? <>Showing all <strong>{totalMatches}</strong> learning {totalMatches === 1 ? 'buddy' : 'buddies'}</>
+            : <>Showing <strong>{filteredMatches.length}</strong> of <strong>{totalMatches}</strong> learning {totalMatches === 1 ? 'buddy' : 'buddies'}</>
           }
         </p>
       </div>
