@@ -18,7 +18,11 @@ const MatchSuggestionsPage = ({
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(false);
   const [startIdx, setStartIdx] = useState(0);
-  const [aiEnabled, setAiEnabled] = useState(false);
+  const [totalMatches, setTotalMatches] = useState(0);
+  const [availableFilterTags, setAvailableFilterTags] = useState([]);
+  const [activeFilters, setActiveFilters] = useState([]);
+  const [userWantSkill, setUserWantSkill] = useState("");
+  const [chatUser, setChatUser] = useState(null);
 
   useEffect(() => {
     if (user && user.id) {
@@ -26,17 +30,67 @@ const MatchSuggestionsPage = ({
       fetch(`${API_URL}/matches/${user.id}`)
         .then(res => res.json())
         .then(data => {
-          setMatches(data.matches || []);
-          setAiEnabled(data.ai_enabled);
+          // Backend returns matches as array of objects with user, rankType, relevanceScore
+          const matchedUsers = (data.matches || []).map(match => match.user);
+          console.log('Raw matches from backend:', matchedUsers.length);
+          console.log('Matches data:', matchedUsers);
+          setMatches(matchedUsers);
+          setTotalMatches(data.totalMatches || 0);
+          const filterTags = data.availableFilterTags || [];
+          console.log('Available filter tags:', filterTags);
+          setAvailableFilterTags(filterTags);
+          // Initialize with NO filters selected to show all matches by default
+          setActiveFilters([]);
+          // Get the user's want skill for display
+          if (user.userWant?.skillName) {
+            setUserWantSkill(user.userWant.skillName);
+          }
         })
-        .catch(() => setMatches([]))
+        .catch((error) => {
+          console.error("Error fetching matches:", error);
+          setMatches([]);
+          setTotalMatches(0);
+          setAvailableFilterTags([]);
+          setActiveFilters([]);
+        })
         .finally(() => setLoading(false));
+    } else {
+      // If no user, set empty state
+      setMatches([]);
+      setTotalMatches(0);
+      setAvailableFilterTags([]);
+      setActiveFilters([]);
+      setLoading(false);
     }
   }, [user]);
 
-  useEffect(() => {
-    console.log("MATCHES STATE UPDATED in MatchSuggestionsPage:", matches);
-  }, [matches]);
+  // Removed console.log for better performance
+
+  // Filter logic
+  const toggleFilter = (tag) => {
+    setActiveFilters(prev => 
+      prev.includes(tag) 
+        ? prev.filter(t => t !== tag)
+        : [...prev, tag]
+    );
+    setStartIdx(0); // Reset to first page when filtering
+  };
+
+  // Apply active filters to matches (show users whose skills match ANY active filter)
+  const filteredMatches = activeFilters.length === 0 
+    ? matches // If no filters selected, show all matches
+    : matches.filter(user => {
+        const userOfferTags = user.userOffer?.tags || [];
+        const userWantTags = user.userWant?.tags || [];
+        const allUserTags = [...userOfferTags, ...userWantTags];
+        console.log(`User ${user.username || user.id} tags:`, allUserTags);
+        console.log('Active filters:', activeFilters);
+        const hasMatch = activeFilters.some(filter => allUserTags.includes(filter));
+        console.log(`User ${user.username || user.id} matches filters:`, hasMatch);
+        return hasMatch;
+      });
+
+  console.log(`Filtered matches: ${filteredMatches.length} out of ${matches.length}`);
 
   const handlePrev = () => {
     setStartIdx((prev) => Math.max(prev - CARDS_PER_VIEW, 0));
@@ -44,11 +98,11 @@ const MatchSuggestionsPage = ({
 
   const handleNext = () => {
     setStartIdx((prev) =>
-      Math.min(prev + CARDS_PER_VIEW, (matches || []).length - CARDS_PER_VIEW)
+      Math.min(prev + CARDS_PER_VIEW, (filteredMatches || []).length - CARDS_PER_VIEW)
     );
   };
 
-  const visibleMatches = (matches || []).slice(startIdx, startIdx + CARDS_PER_VIEW);
+  const visibleMatches = (filteredMatches || []).slice(startIdx, startIdx + CARDS_PER_VIEW);
 
   if (loading) {
     return <div className="match-bg"><div>Loading matches...</div></div>;
@@ -59,14 +113,35 @@ const MatchSuggestionsPage = ({
       <div className="match-bg">
         <button
           onClick={() => setViewedUser(null)}
-          style={{ margin: '24px auto 16px', display: 'block' }}
+          className="back-to-matches-btn"
         >
           &larr; Back to Matches
         </button>
-        <ProfilePage user={viewedUser} isReadOnly={true} />
+        <ProfilePage user={viewedUser} isReadOnly={true} onNavigate={onNavigate} />
       </div>
     );
   }
+
+  // Chat Card Component
+  const ChatCard = ({ user, onClose }) => (
+    <div className="chat-overlay" onClick={onClose}>
+      <div className="chat-card" onClick={(e) => e.stopPropagation()}>
+        <button className="chat-close-btn" onClick={onClose}>×</button>
+        <div className="chat-header">
+          <h3>Contact {user.username || user.name || 'User'}</h3>
+        </div>
+        <div className="chat-content">
+          <div className="chat-email">
+            <strong>Email:</strong> {user.email || 'Email not available'}
+          </div>
+          <div className="chat-future-note">
+            💬 <strong>Chat Feature Coming Soon!</strong><br/>
+            For now, you can reach out via email to start your skill exchange journey.
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="match-bg">
@@ -74,7 +149,31 @@ const MatchSuggestionsPage = ({
       </div>
       <div className="match-title">
         <h1 className="match-suggestions-title">Match Suggestions</h1>
-        <p>Here are your perfect learning partner! Chat Now!</p>
+        {userWantSkill && (
+          <p className="match-intro">
+            Since you want to learn <strong>{userWantSkill}</strong>, our AI suggested these skill categories. 
+            Click to filter by specific categories:
+          </p>
+        )}
+        {availableFilterTags.length > 0 && (
+          <div className="filter-buttons">
+            {availableFilterTags.map(tag => (
+              <button
+                key={tag}
+                className={`filter-btn ${activeFilters.includes(tag) ? 'active' : ''}`}
+                onClick={() => toggleFilter(tag)}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+        )}
+        <p className="match-count">
+          {activeFilters.length === 0 
+            ? `Showing all <strong>${totalMatches}</strong> learning ${totalMatches === 1 ? 'buddy' : 'buddies'}`
+            : `Showing <strong>${filteredMatches.length}</strong> of <strong>${totalMatches}</strong> learning ${totalMatches === 1 ? 'buddy' : 'buddies'}`
+          }
+        </p>
       </div>
       <div className="match-cards-row">
         <button
@@ -87,24 +186,25 @@ const MatchSuggestionsPage = ({
           <div>No matches found.</div>
         ) : (
           visibleMatches.map((user) => (
-            <MatchCard key={user.id} user={user} onChat={onChat} onViewProfile={setViewedUser} />
+            <MatchCard 
+              key={user.id} 
+              user={user} 
+              onChat={() => setChatUser(user)} 
+              onViewProfile={setViewedUser}
+            />
           ))
         )}
         <button
           className="arrow-btn"
           aria-label="Next"
           onClick={handleNext}
-          disabled={startIdx + CARDS_PER_VIEW >= (matches || []).length}
+          disabled={startIdx + CARDS_PER_VIEW >= (filteredMatches || []).length}
         >{'>'}</button>
       </div>
-      {aiEnabled ? (
-        <div className="ai-status ai-enabled">
-          AI Matching is enabled!
-        </div>
-      ) : (
-        <div className="ai-status ai-disabled">
-          AI Matching is currently unavailable due to quota may be exceeded.
-        </div>
+
+      {/* Chat Card Modal */}
+      {chatUser && (
+        <ChatCard user={chatUser} onClose={() => setChatUser(null)} />
       )}
     </div>
   );

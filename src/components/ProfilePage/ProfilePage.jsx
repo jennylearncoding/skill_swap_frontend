@@ -4,7 +4,10 @@ import "./ProfilePage.css";
 import { API_URL } from "../../App";
 import { useAuth } from "../../context/AuthContext";
 
-const ProfilePage = ({ onNavigate, isReadOnly }) => {
+// Profile picture placeholder with consistent styling
+const DEFAULT_PROFILE_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cdefs%3E%3ClinearGradient id='profileGrad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23667eea;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23764ba2;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='60' cy='60' r='60' fill='url(%23profileGrad)'/%3E%3Ccircle cx='60' cy='45' r='22' fill='white' opacity='0.9'/%3E%3Cpath d='M30 90 Q60 65 90 90' fill='white' opacity='0.9'/%3E%3C/svg%3E";
+
+const ProfilePage = ({ onNavigate, isReadOnly, user: propUser }) => {
   const { currentUser, updateUser, logout } = useAuth();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -12,14 +15,22 @@ const ProfilePage = ({ onNavigate, isReadOnly }) => {
   const [editValues, setEditValues] = useState({});
   const [showConfirmation, setShowConfirmation] = useState(false);
 
-  // Redirect to landing page if not logged in
+  // Handle both viewing own profile and other user's profile
   useEffect(() => {
+    // If viewing another user's profile (readonly mode with propUser)
+    if (isReadOnly && propUser) {
+      setUser(propUser);
+      setLoading(false);
+      return;
+    }
+
+    // If not logged in and not viewing another user's profile, redirect to landing
     if (!currentUser) {
       onNavigate('landing');
       return;
     }
 
-    // Fetch full user profile data
+    // Fetch current user's full profile data
     const fetchUserProfile = async () => {
       try {
         const response = await axios.get(`${API_URL}/profiles/${currentUser.id}`);
@@ -34,7 +45,7 @@ const ProfilePage = ({ onNavigate, isReadOnly }) => {
     };
 
     fetchUserProfile();
-  }, [currentUser, onNavigate]);
+  }, [currentUser, onNavigate, isReadOnly, propUser]);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -118,17 +129,44 @@ const ProfilePage = ({ onNavigate, isReadOnly }) => {
 
   // Show message if no user data
   if (!user) {
-    return <div style={{ textAlign: 'center', padding: '50px' }}>Please log in to view your profile.</div>;
+    const message = isReadOnly ? "Profile not found." : "Please log in to view your profile.";
+    return <div style={{ textAlign: 'center', padding: '50px' }}>{message}</div>;
   }
+
+  const getProfileImageUrl = () => {
+    if (!user.image_url) {
+      return DEFAULT_PROFILE_AVATAR;
+    }
+    if (user.image_url.startsWith('http')) {
+      return user.image_url;
+    }
+    return `${API_URL}${user.image_url}`;
+  };
 
   return (
     <div className="profile-bg">
       <div className="profile-main">
-        <div className="profile-card profile-left">
-          {/* User Info section */}
-          <div className="profile-section">
-            <div className="profile-section-header">User Info</div>
-            <div className="profile-section-content">
+        {/* Profile Picture Section */}
+        <div className="profile-picture-section">
+          <img 
+            src={getProfileImageUrl()} 
+            alt={`${user.username || user.email || 'User'}'s profile`}
+            className="profile-picture" 
+          />
+          <h2 className="profile-name">
+            {isReadOnly 
+              ? (user.username || user.email || "Anonymous User")
+              : (user.username || "Set your name")
+            }
+          </h2>
+        </div>
+        
+        <div className="profile-cards-container">
+          <div className="profile-card profile-left">
+            {/* User Info section */}
+            <div className="profile-section">
+              <div className="profile-section-header">User Info</div>
+              <div className="profile-section-content">
               {isEditing ? (
                 <>
                   <div>Your Name: <input value={editValues.user_info?.username || ""} onChange={e => setEditValues(prev => ({ ...prev, user_info: { ...prev.user_info, username: e.target.value } }))} /></div>
@@ -202,10 +240,10 @@ const ProfilePage = ({ onNavigate, isReadOnly }) => {
               )}
             </div>
           </div>
-        </div>
+          </div>
 
-        {/* Right card */}
-        <div className="profile-card profile-right">
+          {/* Right card */}
+          <div className="profile-card profile-right">
           <div className="profile-section">
             <div className="profile-section-header">Location</div>
             <div className="profile-section-content">
@@ -242,6 +280,7 @@ const ProfilePage = ({ onNavigate, isReadOnly }) => {
               {Array.from({ length: 5 }).map((_, i) => (
                 <span key={i} className={i < Math.round(user.average_rating || 0) ? "star filled" : "star"}>★</span>
               ))}
+            </div>
             </div>
           </div>
         </div>

@@ -38,6 +38,163 @@
     text-align: left;
     margin-bottom: 2rem;
   }
+
+  .match-intro {
+    font-size: 1.1rem;
+    color: #555;
+    margin: 1rem 0;
+  }
+
+  .filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin: 1.5rem 0;
+  }
+
+  .filter-btn {
+    background: #f0f0f0;
+    border: 2px solid #e0e0e0;
+    color: #555;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+  }
+
+  .filter-btn:hover {
+    background: #e8e8e8;
+    border-color: #ccc;
+  }
+
+  .filter-btn.active {
+    background: #667eea;
+    border-color: #667eea;
+    color: white;
+    box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+  }
+
+  .match-count {
+    font-size: 1.1rem;
+    color: #333;
+    margin-top: 1rem;
+  }
+
+  .back-to-matches-btn {
+    display: block;
+    margin: 24px auto 16px;
+    padding: 0.75rem 1.5rem;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: 500;
+  }
+
+  .back-to-matches-btn:hover {
+    background: #5a67d8;
+  }
+
+  /* Chat Card Styles */
+  .chat-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .chat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    animation: slideIn 0.3s ease-out;
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .chat-close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #999;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+  }
+
+  .chat-close-btn:hover {
+    color: #333;
+    background: #f0f0f0;
+  }
+
+  .chat-header h3 {
+    margin: 0 0 1.5rem 0;
+    color: #333;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .chat-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .chat-email {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+    font-size: 1rem;
+  }
+
+  .chat-future-note {
+    background: #e8f5e8;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid #4CAF50;
+    text-align: center;
+    line-height: 1.5;
+    color: #2e7d32;
+  }
+
+  .chat-future-note strong {
+    color: #1b5e20;
+  }
   
   .match-title h1 {
     font-family: 'Luckiest Guy', cursive, sans-serif;

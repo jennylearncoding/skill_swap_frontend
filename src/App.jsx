@@ -4,14 +4,16 @@ import ProfilePage from "./components/ProfilePage/ProfilePage";
 import LandingPage from "./components/LandingPage/LandingPage";
 import Navigation from "./components/Navigation/Navigation";
 import MatchSuggestionsPage from "./components/MatchSuggestionsPage/MatchingSuggestions";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 
 export const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
 
 // Main application component for Skill Exchange App
 // Handles global state, navigation, and API integration
-const App = () => {
+const AppContent = () => {
   const [currentPage, setCurrentPage] = useState("landing");
+  const [viewedUser, setViewedUser] = useState(null);
+  const { currentUser, logout } = useAuth();
 
   // Render the current page based on navigation state
   const renderPage = () => {
@@ -25,7 +27,13 @@ const App = () => {
           onNavigate={setCurrentPage}
           onChat={() => console.log("Chat functionality to be implemented")}
           onNavigateProfile={() => setCurrentPage("profile")}
-          onLogout={() => console.log("Logout functionality to be implemented")}
+          onLogout={() => {
+            logout();
+            setCurrentPage("landing");
+          }}
+          user={currentUser}
+          viewedUser={viewedUser}
+          setViewedUser={setViewedUser}
         />;
       default:
         return <LandingPage onNavigate={setCurrentPage} />;
@@ -33,11 +41,17 @@ const App = () => {
   };
 
   return (
+    <div className="App">
+      <Navigation currentPage={currentPage} onNavigate={setCurrentPage} />
+      {renderPage()}
+    </div>
+  );
+};
+
+const App = () => {
+  return (
     <AuthProvider>
-      <div className="App">
-        <Navigation currentPage={currentPage} onNavigate={setCurrentPage} />
-        {renderPage()}
-      </div>
+      <AppContent />
     </AuthProvider>
   );
 };

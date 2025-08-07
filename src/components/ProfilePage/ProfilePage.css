@@ -35,8 +35,36 @@
 
 .profile-main {
   display: flex;
-  gap: 2rem;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
+}
+
+.profile-cards-container {
+  display: flex;
+  gap: 2rem;
+}
+
+.profile-picture-section {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.profile-picture {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  object-fit: cover;
+  margin-bottom: 1rem;
+}
+
+.profile-name {
+  color: #5a4a7a;
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 0;
 }
 
 .profile-card {

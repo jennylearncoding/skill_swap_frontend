@@ -23,22 +23,24 @@ const Navigation = ({ currentPage, onNavigate }) => {
           >
             Home
           </button>
-          <button 
-            className={`nav-link ${currentPage === "profile" ? "active" : ""}`}
-            onClick={() => onNavigate("profile")}
-          >
-            Profile
-          </button>
-          <button 
-            className={`nav-link ${currentPage === "matches" ? "active" : ""}`}
-            onClick={() => onNavigate("matches")}
-          >
-            Match
-          </button>
           {currentUser && (
-            <button className="nav-logout" onClick={handleLogout}>
-              Logout
-            </button>
+            <>
+              <button 
+                className={`nav-link ${currentPage === "profile" ? "active" : ""}`}
+                onClick={() => onNavigate("profile")}
+              >
+                Profile
+              </button>
+              <button 
+                className={`nav-link ${currentPage === "matches" ? "active" : ""}`}
+                onClick={() => onNavigate("matches")}
+              >
+                Match
+              </button>
+              <button className="nav-logout" onClick={handleLogout}>
+                Logout
+              </button>
+            </>
           )}
         </div>
       </div>
