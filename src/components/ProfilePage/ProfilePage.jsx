@@ -3,9 +3,7 @@ import axios from "axios";
 import "./ProfilePage.css";
 import { API_URL } from "../../App";
 import { useAuth } from "../../context/AuthContext";
-
-// Profile picture placeholder with consistent styling
-const DEFAULT_PROFILE_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cdefs%3E%3ClinearGradient id='profileGrad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23667eea;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23764ba2;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='60' cy='60' r='60' fill='url(%23profileGrad)'/%3E%3Ccircle cx='60' cy='45' r='22' fill='white' opacity='0.9'/%3E%3Cpath d='M30 90 Q60 65 90 90' fill='white' opacity='0.9'/%3E%3C/svg%3E";
+import userPlaceholder from "../../assets/user.png";
 
 const ProfilePage = ({ onNavigate, isReadOnly, user: propUser }) => {
   const { currentUser, updateUser, logout } = useAuth();
@@ -135,7 +133,7 @@ const ProfilePage = ({ onNavigate, isReadOnly, user: propUser }) => {
 
   const getProfileImageUrl = () => {
     if (!user.image_url) {
-      return DEFAULT_PROFILE_AVATAR;
+      return userPlaceholder;
     }
     if (user.image_url.startsWith('http')) {
       return user.image_url;
@@ -148,11 +146,22 @@ const ProfilePage = ({ onNavigate, isReadOnly, user: propUser }) => {
       <div className="profile-main">
         {/* Profile Picture Section */}
         <div className="profile-picture-section">
-          <img 
-            src={getProfileImageUrl()} 
-            alt={`${user.username || user.email || 'User'}'s profile`}
-            className="profile-picture" 
-          />
+          <div className="profile-picture-container">
+            <img 
+              src={getProfileImageUrl()} 
+              alt={`${user.username || user.email || 'User'}'s profile`}
+              className="profile-picture" 
+            />
+            {!isReadOnly && (
+              <button 
+                className="upload-photo-btn"
+                onClick={() => console.log("Upload photo functionality coming soon!")}
+                title="Upload photo (coming soon)"
+              >
+                📷 Upload Photo
+              </button>
+            )}
+          </div>
           <h2 className="profile-name">
             {isReadOnly 
               ? (user.username || user.email || "Anonymous User")

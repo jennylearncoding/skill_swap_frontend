@@ -23,6 +23,7 @@ const MatchSuggestionsPage = ({
   const [activeFilters, setActiveFilters] = useState([]);
   const [userWantSkill, setUserWantSkill] = useState("");
   const [chatUser, setChatUser] = useState(null);
+  const [aiEnabled, setAiEnabled] = useState(false);
 
   useEffect(() => {
     if (user && user.id) {
@@ -41,6 +42,8 @@ const MatchSuggestionsPage = ({
           setAvailableFilterTags(filterTags);
           // Initialize with all filters selected to show all matches by default
           setActiveFilters(filterTags);
+          // Set AI enabled status from backend response
+          setAiEnabled(data.ai_enabled || false);
           // Get the user's want skill for display
           if (user.userWant?.skillName) {
             setUserWantSkill(user.userWant.skillName);
@@ -52,6 +55,7 @@ const MatchSuggestionsPage = ({
           setTotalMatches(0);
           setAvailableFilterTags([]);
           setActiveFilters([]);
+          setAiEnabled(false);
         })
         .finally(() => setLoading(false));
     } else {
@@ -60,6 +64,7 @@ const MatchSuggestionsPage = ({
       setTotalMatches(0);
       setAvailableFilterTags([]);
       setActiveFilters([]);
+      setAiEnabled(false);
       setLoading(false);
     }
   }, [user]);
@@ -202,6 +207,15 @@ const MatchSuggestionsPage = ({
           onClick={handleNext}
           disabled={startIdx + CARDS_PER_VIEW >= (filteredMatches || []).length}
         >{'>'}</button>
+      </div>
+
+      {/* AI Status Indicator */}
+      <div className="ai-status-simple">
+        {aiEnabled ? (
+          <p>AI Matching is available</p>
+        ) : (
+          <p>AI Matching Temporarily Unavailable</p>
+        )}
       </div>
 
       {/* Chat Card Modal */}

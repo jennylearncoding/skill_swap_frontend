@@ -195,6 +195,19 @@
   .chat-future-note strong {
     color: #1b5e20;
   }
+
+  /* AI Status Indicator */
+  .ai-status-simple {
+    text-align: center;
+    margin-top: 2rem;
+    padding: 1rem;
+  }
+
+  .ai-status-simple p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #666;
+  }
   
   .match-title h1 {
     font-family: 'Luckiest Guy', cursive, sans-serif;
