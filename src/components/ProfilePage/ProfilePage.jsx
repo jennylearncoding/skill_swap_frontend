@@ -152,22 +152,24 @@ const ProfilePage = ({ onNavigate, isReadOnly, user: propUser }) => {
               alt={`${user.username || user.email || 'User'}'s profile`}
               className="profile-picture" 
             />
+          </div>
+          <div className="profile-name-container">
+            <h2 className="profile-name">
+              {isReadOnly 
+                ? (user.username || user.email || "Anonymous User")
+                : (user.username || "Set your name")
+              }
+            </h2>
             {!isReadOnly && (
               <button 
                 className="upload-photo-btn"
                 onClick={() => console.log("Upload photo functionality coming soon!")}
                 title="Upload photo (coming soon)"
               >
-                📷 Upload Photo
+                Upload Photo
               </button>
             )}
           </div>
-          <h2 className="profile-name">
-            {isReadOnly 
-              ? (user.username || user.email || "Anonymous User")
-              : (user.username || "Set your name")
-            }
-          </h2>
         </div>
         
         <div className="profile-cards-container">

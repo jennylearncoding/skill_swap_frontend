@@ -13,8 +13,8 @@ const Navigation = ({ currentPage, onNavigate }) => {
   return (
     <nav className="navigation">
       <div className="nav-container">
-        <div className="nav-logo" onClick={() => onNavigate("landing")}>
-          Skill Exchange
+        <div className="nav-logo">
+          SkillSwap AI
         </div>
         <div className="nav-links">
           <button 
