@@ -27,9 +27,23 @@ const MatchSuggestionsPage = ({
   useEffect(() => {
     if (user && user.id) {
       setLoading(true);
-      fetch(`${API_URL}/matches/${user.id}`)
-        .then(res => res.json())
-        .then(data => {
+      
+      // Fetch user profile to get skills (since login no longer returns skills)
+      const fetchUserProfileAndMatches = async () => {
+        try {
+          // First, get user's full profile to access skills
+          const profileResponse = await fetch(`${API_URL}/profiles/${user.id}`);
+          const userProfile = await profileResponse.json();
+          
+          // Set user's want skill for display
+          if (userProfile.userWant?.skillName) {
+            setUserWantSkill(userProfile.userWant.skillName);
+          }
+          
+          // Then fetch matches
+          const matchesResponse = await fetch(`${API_URL}/matches/${user.id}`);
+          const data = await matchesResponse.json();
+          
           // Backend returns matches as array of objects with user, rankType, relevanceScore
           const matchedUsers = (data.matches || []).map(match => match.user);
           console.log('Raw matches from backend:', matchedUsers.length);
@@ -41,19 +55,19 @@ const MatchSuggestionsPage = ({
           setAvailableFilterTags(filterTags);
           // Initialize with all filters selected to show all matches by default
           setActiveFilters(filterTags);
-          // Get the user's want skill for display
-          if (user.userWant?.skillName) {
-            setUserWantSkill(user.userWant.skillName);
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching matches:", error);
+          
+        } catch (error) {
+          console.error("Error fetching user profile or matches:", error);
           setMatches([]);
           setTotalMatches(0);
           setAvailableFilterTags([]);
           setActiveFilters([]);
-        })
-        .finally(() => setLoading(false));
+        } finally {
+          setLoading(false);
+        }
+      };
+      
+      fetchUserProfileAndMatches();
     } else {
       // If no user, set empty state
       setMatches([]);

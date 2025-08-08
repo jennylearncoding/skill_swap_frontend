@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is already logged in (you might store token in localStorage)
+    // Check if user is already logged in
     const savedUser = localStorage.getItem('currentUser');
     if (savedUser) {
       setCurrentUser(JSON.parse(savedUser));
@@ -32,7 +32,20 @@ export const AuthProvider = ({ children }) => {
         password
       });
       
-      if (response.data.user) {
+      // Handle new login response format (no nested user object)
+      if (response.data.userId) {
+        const userData = {
+          id: response.data.userId,
+          email: response.data.email,
+          username: response.data.username,
+          hasProfile: response.data.hasProfile
+        };
+        setCurrentUser(userData);
+        localStorage.setItem('currentUser', JSON.stringify(userData));
+        return { success: true };
+      }
+      // Fallback for old format (if still used somewhere)
+      else if (response.data.user) {
         setCurrentUser(response.data.user);
         localStorage.setItem('currentUser', JSON.stringify(response.data.user));
         return { success: true };
