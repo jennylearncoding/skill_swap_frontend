@@ -12,6 +12,7 @@ const ProfilePage = ({ onNavigate, isReadOnly, user: propUser }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editValues, setEditValues] = useState({});
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [validationErrors, setValidationErrors] = useState({});
 
   // Handle both viewing own profile and other user's profile
   useEffect(() => {
@@ -63,7 +64,41 @@ const ProfilePage = ({ onNavigate, isReadOnly, user: propUser }) => {
     });
   };
 
+  const validateForm = () => {
+    const errors = {};
+    
+    // Validate username
+    if (!editValues.user_info?.username?.trim()) {
+      errors.username = "Username is required";
+    }
+    
+    // Validate email
+    if (!editValues.user_info?.email?.trim()) {
+      errors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(editValues.user_info.email.trim())) {
+      errors.email = "Please enter a valid email address";
+    }
+    
+    // Validate skill to offer
+    if (!editValues.skill_to_offer?.trim()) {
+      errors.skill_to_offer = "Skill to offer is required";
+    }
+    
+    // Validate skill to learn
+    if (!editValues.skill_to_learn?.trim()) {
+      errors.skill_to_learn = "Skill to learn is required";
+    }
+    
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSave = async () => {
+    // Validate form before saving
+    if (!validateForm()) {
+      return;
+    }
+
     try {
       let payload = {};
       
@@ -85,9 +120,9 @@ const ProfilePage = ({ onNavigate, isReadOnly, user: propUser }) => {
         } else if (field === "user_info") {
           payload = {
             ...payload,
-            username: editValues[field].username,
+            username: editValues[field].username.trim(),
             pronouns: editValues[field].pronouns,
-            email: editValues[field].email
+            email: editValues[field].email.trim()
           };
         } else {
           payload[field] = editValues[field];
@@ -100,6 +135,7 @@ const ProfilePage = ({ onNavigate, isReadOnly, user: propUser }) => {
       updateUser(res.data); // Update auth context
       setIsEditing(false);
       setEditValues({});
+      setValidationErrors({});
       setShowConfirmation(true);
       
       setTimeout(() => {
@@ -184,9 +220,25 @@ const ProfilePage = ({ onNavigate, isReadOnly, user: propUser }) => {
               <div className="profile-section-content">
               {isEditing ? (
                 <>
-                  <div>Your Name: <input value={editValues.user_info?.username || ""} onChange={e => setEditValues(prev => ({ ...prev, user_info: { ...prev.user_info, username: e.target.value } }))} /></div>
+                  <div>
+                    Your Name: 
+                    <input 
+                      className={validationErrors.username ? "profile-input-error" : ""}
+                      value={editValues.user_info?.username || ""} 
+                      onChange={e => setEditValues(prev => ({ ...prev, user_info: { ...prev.user_info, username: e.target.value } }))} 
+                    />
+                    {validationErrors.username && <div className="error-message">{validationErrors.username}</div>}
+                  </div>
                   <div>Pronouns: <input value={editValues.user_info?.pronouns || ""} onChange={e => setEditValues(prev => ({ ...prev, user_info: { ...prev.user_info, pronouns: e.target.value } }))} /></div>
-                  <div>Email: <input value={editValues.user_info?.email || ""} onChange={e => setEditValues(prev => ({ ...prev, user_info: { ...prev.user_info, email: e.target.value } }))} /></div>
+                  <div>
+                    Email: 
+                    <input 
+                      className={validationErrors.email ? "profile-input-error" : ""}
+                      value={editValues.user_info?.email || ""} 
+                      onChange={e => setEditValues(prev => ({ ...prev, user_info: { ...prev.user_info, email: e.target.value } }))} 
+                    />
+                    {validationErrors.email && <div className="error-message">{validationErrors.email}</div>}
+                  </div>
                 </>
               ) : (
                 <>
@@ -218,15 +270,19 @@ const ProfilePage = ({ onNavigate, isReadOnly, user: propUser }) => {
             <div className="profile-section-header">Skill to Learn</div>
             <div className="profile-section-content">
               {isEditing ? (
-                <input
-                  type="text"
-                  value={editValues.skill_to_learn || ""}
-                  onChange={e => setEditValues(prev => ({ 
-                    ...prev, 
-                    skill_to_learn: e.target.value 
-                  }))}
-                  placeholder="Enter skill you want to learn"
-                />
+                <div>
+                  <input
+                    type="text"
+                    className={validationErrors.skill_to_learn ? "profile-input-error" : ""}
+                    value={editValues.skill_to_learn || ""}
+                    onChange={e => setEditValues(prev => ({ 
+                      ...prev, 
+                      skill_to_learn: e.target.value 
+                    }))}
+                    placeholder="Enter skill you want to learn"
+                  />
+                  {validationErrors.skill_to_learn && <div className="error-message">{validationErrors.skill_to_learn}</div>}
+                </div>
               ) : (
                 user.userWant?.skillName ? (
                   <span className="profile-skill">{user.userWant.skillName}</span>
@@ -239,15 +295,19 @@ const ProfilePage = ({ onNavigate, isReadOnly, user: propUser }) => {
             <div className="profile-section-header">Skill to Offer</div>
             <div className="profile-section-content">
               {isEditing ? (
-                <input
-                  type="text"
-                  value={editValues.skill_to_offer || ""}
-                  onChange={e => setEditValues(prev => ({ 
-                    ...prev, 
-                    skill_to_offer: e.target.value 
-                  }))}
-                  placeholder="Enter skill you can offer"
-                />
+                <div>
+                  <input
+                    type="text"
+                    className={validationErrors.skill_to_offer ? "profile-input-error" : ""}
+                    value={editValues.skill_to_offer || ""}
+                    onChange={e => setEditValues(prev => ({ 
+                      ...prev, 
+                      skill_to_offer: e.target.value 
+                    }))}
+                    placeholder="Enter skill you can offer"
+                  />
+                  {validationErrors.skill_to_offer && <div className="error-message">{validationErrors.skill_to_offer}</div>}
+                </div>
               ) : (
                 user.userOffer?.skillName ? (
                   <span className="profile-skill">{user.userOffer.skillName}</span>

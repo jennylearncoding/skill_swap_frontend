@@ -286,4 +286,17 @@
   opacity: 0.95;
 }
 
+/* Validation Error Styles */
+.profile-input-error {
+  border: 2px solid #f44336 !important;
+  background-color: #ffebee !important;
+}
+
+.error-message {
+  color: #f44336;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  font-weight: 500;
+}
+
 
