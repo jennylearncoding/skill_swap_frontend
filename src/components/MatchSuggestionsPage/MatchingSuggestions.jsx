@@ -7,13 +7,10 @@ import { API_URL } from "../../App";
 const CARDS_PER_VIEW = 3;
 
 const MatchSuggestionsPage = ({
-  onChat,
-  onNavigateProfile,
   onNavigate,
   user,
   viewedUser,
   setViewedUser,
-  onLogout,
 }) => {
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -46,12 +43,9 @@ const MatchSuggestionsPage = ({
           
           // Backend returns matches as array of objects with user, rankType, relevanceScore
           const matchedUsers = (data.matches || []).map(match => match.user);
-          console.log('Raw matches from backend:', matchedUsers.length);
-          console.log('Matches data:', matchedUsers);
           setMatches(matchedUsers);
           setTotalMatches(data.totalMatches || 0);
           const filterTags = data.availableFilterTags || [];
-          console.log('Available filter tags:', filterTags);
           setAvailableFilterTags(filterTags);
           // Initialize with all filters selected to show all matches by default
           setActiveFilters(filterTags);
@@ -99,14 +93,9 @@ const MatchSuggestionsPage = ({
         const userOfferTags = user.userOffer?.tags || [];
         const userWantTags = user.userWant?.tags || [];
         const allUserTags = [...userOfferTags, ...userWantTags];
-        console.log(`User ${user.username || user.id} tags:`, allUserTags);
-        console.log('Active filters:', activeFilters);
         const hasMatch = activeFilters.some(filter => allUserTags.includes(filter));
-        console.log(`User ${user.username || user.id} matches filters:`, hasMatch);
         return hasMatch;
       });
-
-  console.log(`Filtered matches: ${filteredMatches.length} out of ${matches.length}`);
 
   const handlePrev = () => {
     setStartIdx((prev) => Math.max(prev - CARDS_PER_VIEW, 0));
@@ -143,17 +132,17 @@ const MatchSuggestionsPage = ({
     <div className="chat-overlay" onClick={onClose}>
       <div className="chat-card" onClick={(e) => e.stopPropagation()}>
         <button className="chat-close-btn" onClick={onClose}>×</button>
-        <div className="chat-header">
-          <h3>Contact {user.username || user.name || 'User'}</h3>
-        </div>
+                     <div className="chat-header">
+               <h3>Contact Your Learning Partner</h3>
+             </div>
         <div className="chat-content">
           <div className="chat-email">
             <strong>Email:</strong> {user.email || 'Email not available'}
           </div>
-          <div className="chat-future-note">
-            💬 <strong>Chat Feature Coming Soon!</strong><br/>
-            For now, you can reach out via email to start your skill exchange journey.
-          </div>
+                         <div className="chat-future-note">
+                 <strong>Chat Feature Coming Soon!</strong><br/>
+                 For now, you can reach out via email to start your skill exchange journey.
+               </div>
         </div>
       </div>
     </div>

@@ -94,11 +94,7 @@ const ProfilePage = ({ onNavigate, isReadOnly, user: propUser }) => {
         }
       });
       
-      console.log('Sending PATCH request to:', `${API_URL}/profiles/${user.id}`);
-      console.log('Payload:', payload);
-      
       const res = await axios.patch(`${API_URL}/profiles/${user.id}`, payload);
-      console.log('Response:', res.data);
       
       setUser(res.data);
       updateUser(res.data); // Update auth context
@@ -144,6 +140,14 @@ const ProfilePage = ({ onNavigate, isReadOnly, user: propUser }) => {
   return (
     <div className="profile-bg">
       <div className="profile-main">
+        {/* Header with Edit Button */}
+        {!isReadOnly && (
+          <div className="profile-header-actions">
+            <button className="profile-edit-btn" onClick={handleEdit}>
+              Edit Profile
+            </button>
+          </div>
+        )}
         {/* Profile Picture Section */}
         <div className="profile-picture-section">
           <div className="profile-picture-container">
@@ -163,7 +167,7 @@ const ProfilePage = ({ onNavigate, isReadOnly, user: propUser }) => {
             {!isReadOnly && (
               <button 
                 className="upload-photo-btn"
-                onClick={() => console.log("Upload photo functionality coming soon!")}
+                onClick={() => {}}
                 title="Upload photo (coming soon)"
               >
                 Upload Photo
@@ -300,7 +304,7 @@ const ProfilePage = ({ onNavigate, isReadOnly, user: propUser }) => {
         {showConfirmation && (
           <div className="profile-confirmation">
             <div className="confirmation-message">
-              ✅ Profile updated successfully!
+              Profile updated successfully!
             </div>
           </div>
         )}
@@ -314,13 +318,7 @@ const ProfilePage = ({ onNavigate, isReadOnly, user: propUser }) => {
             </button>
           </div>
         )}
-        {!isEditing && !isReadOnly && (
-          <div className="profile-edit-container">
-            <button className="profile-edit-btn" onClick={handleEdit}>
-              Edit Profile
-            </button>
-          </div>
-        )}
+
       </div>
     </div>
   );

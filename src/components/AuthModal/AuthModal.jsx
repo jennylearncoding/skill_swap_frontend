@@ -6,8 +6,7 @@ const AuthModal = ({ isOpen, onClose }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     email: '',
-    password: '',
-    confirmPassword: ''
+    password: ''
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -34,11 +33,7 @@ const AuthModal = ({ isOpen, onClose }) => {
       return;
     }
 
-    if (!isLogin && formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
-      setLoading(false);
-      return;
-    }
+
 
     try {
       let result;
@@ -50,7 +45,7 @@ const AuthModal = ({ isOpen, onClose }) => {
 
       if (result.success) {
         onClose();
-        setFormData({ email: '', password: '', confirmPassword: '' });
+        setFormData({ email: '', password: '' });
       } else {
         setError(result.error);
       }
@@ -64,7 +59,7 @@ const AuthModal = ({ isOpen, onClose }) => {
   const toggleMode = () => {
     setIsLogin(!isLogin);
     setError('');
-    setFormData({ email: '', password: '', confirmPassword: '' });
+    setFormData({ email: '', password: '' });
   };
 
   if (!isOpen) return null;
@@ -104,18 +99,7 @@ const AuthModal = ({ isOpen, onClose }) => {
             />
           </div>
 
-          {!isLogin && (
-            <div className="form-group">
-              <input
-                type="password"
-                name="confirmPassword"
-                placeholder="Confirm Password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-              />
-            </div>
-          )}
+
 
           <button 
             type="submit" 

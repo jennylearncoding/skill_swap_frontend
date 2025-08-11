@@ -3,6 +3,14 @@
   background: #f6f8d7;
   padding: 2rem;
   font-family: 'Montserrat', sans-serif;
+  position: relative;
+}
+
+.profile-header-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 2rem;
+  width: 100%;
 }
 
 .profile-header {
@@ -69,21 +77,13 @@
   background: #667eea;
   color: white;
   border: none;
-  border-radius: 15px;
-  padding: 0.4rem 0.8rem;
-  font-size: 0.8rem;
+  border-radius: 6px;
+  padding: 0.4rem 1rem;
+  font-size: 0.9rem;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  transition: all 0.3s ease;
-  font-weight: 500;
+  font-weight: bold;
   white-space: nowrap;
   height: fit-content;
-}
-
-.upload-photo-btn:hover {
-  background: #5a67d8;
-  transform: translateY(-1px);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
 }
 
 .profile-name-container {
@@ -99,12 +99,12 @@
   font-size: 1.8rem;
   font-weight: 600;
   margin: 0;
+  font-family: 'Lilita One', cursive, sans-serif;
 }
 
 .profile-card {
   background: #fffbe7;
   border-radius: 18px;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
   padding: 2rem 1.5rem;
   min-width: 340px;
   max-width: 400px;
@@ -131,7 +131,6 @@
   height: 150px;
   border-radius: 50%;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .profile-avatar {
@@ -139,11 +138,6 @@
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
-  transition: transform 0.3s ease;
-}
-
-.profile-avatar:hover {
-  transform: scale(1.05);
 }
 
 .upload-overlay {
@@ -169,11 +163,6 @@
   padding: 0.6rem 1.2rem;
   font-size: 0.9rem;
   cursor: pointer;
-  transition: background 0.2s;
-}
-
-.profile-upload-btn:hover:not(:disabled) {
-  background: #8b5cf6;
 }
 
 .profile-upload-btn:disabled {
@@ -186,7 +175,6 @@
   border-radius: 12px;
   padding: 1rem;
   margin-bottom: 0.7rem;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
 }
 
 .profile-section-header {
@@ -232,35 +220,17 @@
   color: #fbc02d;
 }
 
-.profile-edit-container {
-  position: fixed;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1000;
-}
+
 
 .profile-edit-btn {
-  background: #2196F3;
+  background: #f47c4c;
   color: white;
   border: none;
-  padding: 1rem 2rem;
-  border-radius: 25px;
+  padding: 0.6rem 1.5rem;
+  border-radius: 6px;
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
-  transition: all 0.3s ease;
-}
-
-.profile-edit-btn:hover {
-  background: #1976D2;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(33, 150, 243, 0.4);
-}
-
-.profile-edit-btn:active {
-  transform: translateY(0);
 }
 
 .profile-save-container {
@@ -273,49 +243,25 @@
 }
 
 .profile-save-btn {
-  background: #4CAF50;
+  background: #667eea;
   color: white;
   border: none;
-  padding: 1rem 2rem;
-  border-radius: 25px;
+  padding: 0.6rem 1.5rem;
+  border-radius: 6px;
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
-  transition: all 0.3s ease;
-}
-
-.profile-save-btn:hover {
-  background: #45a049;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
-}
-
-.profile-save-btn:active {
-  transform: translateY(0);
 }
 
 .profile-cancel-btn {
-  background: #f44336;
+  background: #6c757d;
   color: white;
   border: none;
-  padding: 1rem 2rem;
-  border-radius: 25px;
+  padding: 0.6rem 1.5rem;
+  border-radius: 6px;
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
-  transition: all 0.3s ease;
-}
-
-.profile-cancel-btn:hover {
-  background: #d32f2f;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(244, 67, 54, 0.4);
-}
-
-.profile-cancel-btn:active {
-  transform: translateY(0);
 }
 
 /* Confirmation message styles */
@@ -328,26 +274,16 @@
 }
 
 .confirmation-message {
-  background: #4CAF50;
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 20px;
-  font-weight: 500;
-  font-size: 0.9rem;
-  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+  background: #90EE90;
+  color: #333;
+  padding: 0.6rem 1.5rem;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 1rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   opacity: 0.95;
 }
 
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-  to {
-    opacity: 0.95;
-    transform: translateX(0);
-  }
-}
+

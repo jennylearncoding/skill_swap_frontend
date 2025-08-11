@@ -25,12 +25,6 @@ const AppContent = () => {
       case "matches":
         return <MatchSuggestionsPage 
           onNavigate={setCurrentPage}
-          onChat={() => console.log("Chat functionality to be implemented")}
-          onNavigateProfile={() => setCurrentPage("profile")}
-          onLogout={() => {
-            logout();
-            setCurrentPage("landing");
-          }}
           user={currentUser}
           viewedUser={viewedUser}
           setViewedUser={setViewedUser}

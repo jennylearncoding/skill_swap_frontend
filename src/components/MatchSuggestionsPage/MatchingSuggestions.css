@@ -61,20 +61,13 @@
     border-radius: 20px;
     font-size: 0.9rem;
     cursor: pointer;
-    transition: all 0.3s ease;
     font-weight: 500;
-  }
-
-  .filter-btn:hover {
-    background: #e8e8e8;
-    border-color: #ccc;
   }
 
   .filter-btn.active {
     background: #667eea;
     border-color: #667eea;
     color: white;
-    box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
   }
 
   .match-count {
@@ -93,12 +86,7 @@
     border-radius: 6px;
     font-size: 1rem;
     cursor: pointer;
-    transition: background-color 0.3s ease;
     font-weight: 500;
-  }
-
-  .back-to-matches-btn:hover {
-    background: #5a67d8;
   }
 
   /* Chat Card Styles */
@@ -122,7 +110,6 @@
     width: 90%;
     max-width: 400px;
     position: relative;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     animation: slideIn 0.3s ease-out;
   }
 
@@ -153,12 +140,6 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    transition: all 0.3s ease;
-  }
-
-  .chat-close-btn:hover {
-    color: #333;
-    background: #f0f0f0;
   }
 
   .chat-header h3 {
@@ -183,13 +164,13 @@
   }
 
   .chat-future-note {
-    background: #e8f5e8;
+    background: #e6f3ff;
     padding: 1.5rem;
     border-radius: 8px;
-    border: 2px solid #4CAF50;
+    border: 2px solid #667eea;
     text-align: center;
     line-height: 1.5;
-    color: #2e7d32;
+    color: #333;
   }
 
   .chat-future-note strong {
@@ -246,13 +227,11 @@
     cursor: pointer;
     padding: 0 1rem;
     user-select: none;
-    transition: color 0.2s;
   }
   
   .match-card {
     background: #fff;
     border-radius: 24px;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
     padding: 2rem 1.5rem 1.5rem 1.5rem;
     min-width: 260px;
     max-width: 300px;
@@ -300,8 +279,8 @@
   }
   
   .chat-btn {
-    background: #fbc02d;
-    color: #222;
+    background: #6c757d;
+    color: white;
     border: none;
     border-radius: 16px;
     padding: 0.5rem 1.5rem;
@@ -309,11 +288,6 @@
     font-size: 1.1rem;
     margin-top: 0.5rem;
     cursor: pointer;
-    transition: background 0.2s;
-  }
-  
-  .chat-btn:hover {
-    background: #ffe082;
   }
   
   .arrow-btn:disabled {
@@ -321,9 +295,7 @@
     cursor: not-allowed;
   }
   
-  .arrow-btn:not(:disabled):hover {
-    color: #311b92;
-  }
+
   
   .match-suggestions-title {
     font-family: 'Lilita One', cursive, sans-serif !important;

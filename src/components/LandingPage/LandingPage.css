@@ -51,20 +51,14 @@
   border-radius: 6px;
   cursor: pointer;
   font-weight: bold;
-  box-shadow: 3px 3px 0 #ffd6b0;
   margin-bottom: 1rem;
   transition: transform 0.2s ease;
   min-width: 180px;
   text-align: center;
 }
 
-.landing-btn:hover {
-  transform: translateY(-2px);
-}
-
 .landing-btn.primary {
   background: #f47c4c;
-  box-shadow: 3px 3px 0 #ffd6b0;
 }
 
 .landing-btn.secondary {
@@ -72,11 +66,6 @@
   color: #f47c4c;
   border: 2px solid #f47c4c;
   box-shadow: none;
-}
-
-.landing-btn.secondary:hover {
-  background: #f47c4c;
-  color: white;
 }
 
 .landing-right {
@@ -100,6 +89,60 @@
 
 
 
+/* How It Works Section */
+.how-it-works-section {
+  padding: 4rem 5vw;
+  background: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+}
+
+.how-it-works-title {
+  text-align: center;
+  font-size: 3rem;
+  font-family: 'Lilita One', cursive, sans-serif;
+  color: #333;
+  margin-bottom: 3rem;
+}
+
+.how-it-works-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: #e6f3ff;
+  border-radius: 12px;
+}
+
+.step-number {
+  font-size: 2.5rem;
+  font-family: 'Lilita One', cursive, sans-serif;
+  color: #667eea;
+  flex-shrink: 0;
+  margin-right: 0.5rem;
+}
+
+.step-content h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.step-content p {
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.5;
+  margin: 0;
+}
+
 @media (max-width: 900px) {
   .landing-content {
     flex-direction: column;
@@ -116,5 +159,26 @@
   }
   .landing-illustration {
     max-width: 100%;
+  }
+  
+  .how-it-works-section {
+    padding: 3rem 2rem;
+  }
+  
+  .how-it-works-title {
+    font-size: 2.5rem;
+  }
+  
+  .how-it-works-steps {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .step {
+    padding: 1rem;
+  }
+  
+  .step-number {
+    font-size: 2rem;
   }
 } 
