@@ -176,14 +176,6 @@ const ProfilePage = ({ onNavigate, isReadOnly, user: propUser }) => {
   return (
     <div className="profile-bg">
       <div className="profile-main">
-        {/* Header with Edit Button */}
-        {!isReadOnly && (
-          <div className="profile-header-actions">
-            <button className="profile-edit-btn" onClick={handleEdit}>
-              Edit Profile
-            </button>
-          </div>
-        )}
         {/* Profile Picture Section */}
         <div className="profile-picture-section">
           <div className="profile-picture-container">
@@ -368,6 +360,16 @@ const ProfilePage = ({ onNavigate, isReadOnly, user: propUser }) => {
             </div>
           </div>
         )}
+        
+        {/* Edit Profile Button - Bottom Right */}
+        {!isReadOnly && !isEditing && (
+          <div className="profile-edit-container">
+            <button className="profile-edit-btn" onClick={handleEdit}>
+              Edit Profile
+            </button>
+          </div>
+        )}
+        
         {isEditing && (
           <div className="profile-save-container">
             <button className="profile-save-btn" onClick={handleSave}>

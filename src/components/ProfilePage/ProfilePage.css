@@ -242,6 +242,13 @@
   gap: 1rem;
 }
 
+.profile-edit-container {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1000;
+}
+
 .profile-save-btn {
   background: #667eea;
   color: white;
