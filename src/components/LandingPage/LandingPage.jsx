@@ -1,23 +1,34 @@
+// Import React and useState hook for managing modal state
 import React, { useState } from "react";
+// Import CSS file for styling the landing page
 import "./LandingPage.css";
+// Import the landing page illustration image
 import LandingImg from "../../assets/Landing.png";
+// Import the login/signup modal component
 import AuthModal from "../AuthModal/AuthModal";
+// Import our custom hook to access user login info
 import { useAuth } from "../../context/AuthContext";
 
+// LandingPage component - the main home page of the app
+// Props: onNavigate (function to navigate to other pages)
 const LandingPage = ({ onNavigate }) => {
+  // State to control whether to show the login/signup modal
   const [showAuthModal, setShowAuthModal] = useState(false);
+  // Get current user info and logout function from our auth context
   const { currentUser, logout } = useAuth();
 
+  // Function to handle when user clicks the main action button
   const handleAuthClick = () => {
     if (currentUser) {
-      // If user is logged in, navigate to profile
+      // If user is logged in, navigate to their profile page
       onNavigate('profile');
     } else {
-      // If user is not logged in, show auth modal
+      // If user is not logged in, show the login/signup modal
       setShowAuthModal(true);
     }
   };
 
+  // Function to handle logout (currently not used but available)
   const handleLogout = () => {
     logout();
   };

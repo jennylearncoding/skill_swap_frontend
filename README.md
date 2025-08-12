@@ -30,6 +30,24 @@ It makes learning social, fun, and free. Inspired by social matching platforms, 
 - **Testing**: Jest, React Testing Library
 - **Build Tool**: Create React App
 
+## 📦 Dependencies
+
+### Core Dependencies
+- **react**: ^18.2.0 - React library for building user interfaces
+- **react-dom**: ^18.2.0 - React DOM rendering
+- **axios**: ^1.6.2 - HTTP client for making API requests
+- **react-scripts**: 5.0.1 - Create React App build scripts
+
+### Development Dependencies
+- **@testing-library/jest-dom**: ^5.17.0 - Custom Jest matchers for DOM testing
+- **@testing-library/react**: ^13.4.0 - React testing utilities
+- **@testing-library/user-event**: ^13.5.0 - User event simulation for testing
+- **web-vitals**: ^2.1.4 - Web performance metrics
+- **@babel/preset-env**: ^7.27.2 - Babel preset for modern JavaScript
+- **@babel/preset-react**: ^7.27.1 - Babel preset for React
+- **babel-jest**: ^29.7.0 - Jest transformer for Babel
+- **gh-pages**: ^6.3.0 - GitHub Pages deployment
+
 ## 📋 Prerequisites
 
 - Node.js (version 14 or higher)
