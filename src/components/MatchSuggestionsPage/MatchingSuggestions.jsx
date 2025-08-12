@@ -25,7 +25,7 @@ const MatchSuggestionsPage = ({
     if (user && user.id) {
       setLoading(true);
       
-      // Fetch user profile to get skills (since login no longer returns skills)
+      // Fetch user profile to get skills
       const fetchUserProfileAndMatches = async () => {
         try {
           // First, get user's full profile to access skills
@@ -72,8 +72,6 @@ const MatchSuggestionsPage = ({
     }
   }, [user]);
 
-  // Removed console.log for better performance
-
   // Filter logic
   const toggleFilter = (tag) => {
     setActiveFilters(prev => 
@@ -88,7 +86,7 @@ const MatchSuggestionsPage = ({
   const filteredMatches = activeFilters.length === 0 
     ? matches // If no filters selected, show all matches
     : activeFilters.length === availableFilterTags.length
-    ? matches // If all filters selected, show all matches (optimization)
+    ? matches // If all filters selected, show all matches
     : matches.filter(user => {
         const userOfferTags = user.userOffer?.tags || [];
         const userWantTags = user.userWant?.tags || [];

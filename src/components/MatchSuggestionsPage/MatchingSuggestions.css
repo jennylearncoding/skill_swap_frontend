@@ -282,7 +282,7 @@
     background: #6c757d;
     color: white;
     border: none;
-    border-radius: 16px;
+    border-radius: 0;
     padding: 0.5rem 1.5rem;
     font-weight: bold;
     font-size: 1.1rem;

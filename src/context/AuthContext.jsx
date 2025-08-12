@@ -32,10 +32,10 @@ export const AuthProvider = ({ children }) => {
         password
       });
       
-      // Handle new login response format (no nested user object)
-      if (response.data.userId) {
+      // Handle login response format
+      if (response.data.id) {
         const userData = {
-          id: response.data.userId,
+          id: response.data.id,
           email: response.data.email,
           username: response.data.username,
           hasProfile: response.data.hasProfile
@@ -44,12 +44,14 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('currentUser', JSON.stringify(userData));
         return { success: true };
       }
-      // Fallback for old format (if still used somewhere)
+      // Fallback for old format
+      /*
       else if (response.data.user) {
         setCurrentUser(response.data.user);
         localStorage.setItem('currentUser', JSON.stringify(response.data.user));
         return { success: true };
       }
+      */
     } catch (error) {
       console.error('Login error:', error);
       return { 
@@ -61,14 +63,21 @@ export const AuthProvider = ({ children }) => {
 
   const signup = async (email, password) => {
     try {
-      const response = await axios.post(`${API_URL}/auth/signup`, {
+      const response = await axios.post(`${API_URL}/auth/register`, {
         email,
         password
       });
       
-      if (response.data.user) {
-        setCurrentUser(response.data.user);
-        localStorage.setItem('currentUser', JSON.stringify(response.data.user));
+      // Handle register response format
+      if (response.data.id) {
+        const userData = {
+          id: response.data.id,
+          email: response.data.email,
+          username: response.data.username,
+          hasProfile: false // New users don't have profiles yet
+        };
+        setCurrentUser(userData);
+        localStorage.setItem('currentUser', JSON.stringify(userData));
         return { success: true };
       }
     } catch (error) {

@@ -35,7 +35,7 @@ describe('App Integration Tests', () => {
       render(<App />);
 
       // Should start on landing page
-      expect(screen.getByText(/Skill Exchange/i)).toBeInTheDocument();
+      expect(screen.getByText(/SkillSwap AI/i)).toBeInTheDocument();
       expect(screen.getByText(/Home/i)).toBeInTheDocument();
 
       // Navigate to profile page using the navigation button

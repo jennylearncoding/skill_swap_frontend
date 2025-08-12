@@ -14,10 +14,12 @@ const AuthModal = ({ isOpen, onClose }) => {
   const { login, signup } = useAuth();
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const newFormData = {
+      email: formData.email,
+      password: formData.password
+    };
+    newFormData[e.target.name] = e.target.value;
+    setFormData(newFormData);
     setError(''); // Clear error when user types
   };
 
@@ -45,7 +47,11 @@ const AuthModal = ({ isOpen, onClose }) => {
 
       if (result.success) {
         onClose();
-        setFormData({ email: '', password: '' });
+        const emptyForm = {
+          email: '',
+          password: ''
+        };
+        setFormData(emptyForm);
       } else {
         setError(result.error);
       }
@@ -59,7 +65,11 @@ const AuthModal = ({ isOpen, onClose }) => {
   const toggleMode = () => {
     setIsLogin(!isLogin);
     setError('');
-    setFormData({ email: '', password: '' });
+    const emptyForm = {
+      email: '',
+      password: ''
+    };
+    setFormData(emptyForm);
   };
 
   if (!isOpen) return null;

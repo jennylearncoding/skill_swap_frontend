@@ -16,7 +16,7 @@ const ProfilePage = ({ onNavigate, isReadOnly, user: propUser }) => {
 
   // Handle both viewing own profile and other user's profile
   useEffect(() => {
-    // If viewing another user's profile (readonly mode with propUser)
+    // If viewing another user's profile
     if (isReadOnly && propUser) {
       setUser(propUser);
       setLoading(false);
@@ -217,7 +217,22 @@ const ProfilePage = ({ onNavigate, isReadOnly, user: propUser }) => {
                     <input 
                       className={validationErrors.username ? "profile-input-error" : ""}
                       value={editValues.user_info?.username || ""} 
-                      onChange={e => setEditValues(prev => ({ ...prev, user_info: { ...prev.user_info, username: e.target.value } }))} 
+                      onChange={e => {
+                      const newEditValues = {
+                        user_info: {
+                          username: e.target.value,
+                          pronouns: editValues.user_info?.pronouns || "",
+                          email: editValues.user_info?.email || ""
+                        },
+                        bio: editValues.bio || "",
+                        skill_to_learn: editValues.skill_to_learn || "",
+                        skill_to_offer: editValues.skill_to_offer || "",
+                        location: editValues.location || "",
+                        availability: editValues.availability || "",
+                        learning_style: editValues.learning_style || ""
+                      };
+                      setEditValues(newEditValues);
+                    }} 
                     />
                     {validationErrors.username && <div className="error-message">{validationErrors.username}</div>}
                   </div>
@@ -257,7 +272,6 @@ const ProfilePage = ({ onNavigate, isReadOnly, user: propUser }) => {
             </div>
           </div>
 
-          {/* ✅ FIXED: Input field for skill to learn */}
           <div className="profile-section">
             <div className="profile-section-header">Skill to Learn</div>
             <div className="profile-section-content">
@@ -361,7 +375,7 @@ const ProfilePage = ({ onNavigate, isReadOnly, user: propUser }) => {
           </div>
         )}
         
-        {/* Edit Profile Button - Bottom Right */}
+        {/* Edit Profile Button */}
         {!isReadOnly && !isEditing && (
           <div className="profile-edit-container">
             <button className="profile-edit-btn" onClick={handleEdit}>

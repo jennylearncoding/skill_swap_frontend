@@ -8,7 +8,7 @@ import { AuthProvider, useAuth } from "./context/AuthContext";
 
 export const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
 
-// Main application component for Skill Exchange App
+// Main application component for SkillSwap App
 // Handles global state, navigation, and API integration
 const AppContent = () => {
   const [currentPage, setCurrentPage] = useState("landing");

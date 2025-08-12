@@ -66,19 +66,15 @@
     background: #fbc02d;
     color: #222;
     border: none;
-    border-radius: 16px;
+    border-radius: 0;
     padding: 0.5rem 1.5rem;
     font-weight: bold;
     font-size: 1.1rem;
     margin-top: 0.5rem;
     cursor: pointer;
-    box-shadow: 2px 2px 0 #ffd6b0;
-    transition: background 0.2s;
   }
   
-  .chat-btn:hover {
-    background: #ffe082;
-  }
+
   
   .match-cards-row {
     display: flex;
