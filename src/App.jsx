@@ -1,8 +1,5 @@
-// Import React and the useState hook for managing state
 import React, { useState } from "react";
-// Import CSS file for styling
 import "./App.css";
-// Import all the page components we'll use
 import ProfilePage from "./components/ProfilePage/ProfilePage";
 import LandingPage from "./components/LandingPage/LandingPage";
 import Navigation from "./components/Navigation/Navigation";

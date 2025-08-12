@@ -1,8 +1,5 @@
-// Import React and our authentication hook
 import React from "react";
-// Import CSS file for styling the navigation bar
 import "./Navigation.css";
-// Import our custom hook to access user login info
 import { useAuth } from "../../context/AuthContext";
 
 // Navigation component - shows the top navigation bar on every page

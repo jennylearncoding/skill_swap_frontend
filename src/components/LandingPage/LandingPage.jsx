@@ -1,10 +1,6 @@
-// Import React and useState hook for managing modal state
 import React, { useState } from "react";
-// Import CSS file for styling the landing page
 import "./LandingPage.css";
-// Import the landing page illustration image
 import LandingImg from "../../assets/Landing.png";
-// Import the login/signup modal component
 import AuthModal from "../AuthModal/AuthModal";
 // Import our custom hook to access user login info
 import { useAuth } from "../../context/AuthContext";

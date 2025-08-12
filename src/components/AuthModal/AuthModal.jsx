@@ -1,8 +1,5 @@
-// Import React and useState hook for managing form state
 import React, { useState } from 'react';
-// Import CSS file for styling the modal
 import './AuthModal.css';
-// Import our custom hook to access login/signup functions
 import { useAuth } from '../../context/AuthContext';
 
 // AuthModal component - shows login/signup form in a popup modal
@@ -25,7 +22,6 @@ const AuthModal = ({ isOpen, onClose }) => {
 
   // Function to handle when user types in the form fields
   const handleChange = (e) => {
-    // Simpler way without spread operator - easier for beginners
     const newFormData = {
       email: formData.email,
       password: formData.password
@@ -104,25 +100,18 @@ const AuthModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    {/* Overlay background - clicking here closes the modal */}
     <div className="auth-modal-overlay" onClick={onClose}>
-      {/* Modal content - clicking here keeps modal open */}
       <div className="auth-modal" onClick={(e) => e.stopPropagation()}>
-        {/* Close button (X) in top right corner */}
         <button className="auth-modal-close" onClick={onClose}>×</button>
         
-        {/* Modal header with title and description */}
         <div className="auth-modal-header">
           <h2>{isLogin ? 'Welcome Back!' : 'Join SkillSwap'}</h2>
           <p>{isLogin ? 'Sign in to your account' : 'Create your account to start learning'}</p>
         </div>
 
-        {/* Login/signup form */}
         <form onSubmit={handleSubmit} className="auth-form">
-          {/* Show error message if there is one */}
           {error && <div className="auth-error">{error}</div>}
           
-          {/* Email input field */}
           <div className="form-group">
             <input
               type="email"
@@ -134,7 +123,6 @@ const AuthModal = ({ isOpen, onClose }) => {
             />
           </div>
 
-          {/* Password input field */}
           <div className="form-group">
             <input
               type="password"
@@ -146,7 +134,6 @@ const AuthModal = ({ isOpen, onClose }) => {
             />
           </div>
 
-          {/* Submit button (Login or Sign Up) */}
           <button 
             type="submit" 
             className="auth-submit-btn"
@@ -156,7 +143,6 @@ const AuthModal = ({ isOpen, onClose }) => {
           </button>
         </form>
 
-        {/* Toggle between login and signup modes */}
         <div className="auth-toggle">
           <p>
             {isLogin ? "Don't have an account? " : "Already have an account? "}
