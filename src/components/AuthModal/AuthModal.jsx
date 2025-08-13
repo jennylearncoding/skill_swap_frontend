@@ -14,6 +14,8 @@ const AuthModal = ({ isOpen, onClose }) => {
   });
   // State to store any error messages to show to user
   const [error, setError] = useState('');
+  // State to store success messages (for signup confirmation)
+  const [successMessage, setSuccessMessage] = useState('');
   // State to track if we're currently processing login/signup
   const [loading, setLoading] = useState(false);
   
@@ -32,6 +34,8 @@ const AuthModal = ({ isOpen, onClose }) => {
     setFormData(newFormData);
     // Clear any error messages when user starts typing
     setError('');
+    // Clear success message when user starts typing
+    setSuccessMessage('');
   };
 
   // Function to handle when user submits the form (clicks login/signup button)
@@ -42,6 +46,8 @@ const AuthModal = ({ isOpen, onClose }) => {
     setLoading(true);
     // Clear any previous error messages
     setError('');
+    // Clear any previous success messages
+    setSuccessMessage('');
 
     // Check if user filled in all required fields
     if (!formData.email || !formData.password) {
@@ -61,14 +67,30 @@ const AuthModal = ({ isOpen, onClose }) => {
 
       // If login/signup was successful
       if (result.success) {
-        // Close the modal
-        onClose();
-        // Clear the form data
-        const emptyForm = {
-          email: '',
-          password: ''
-        };
-        setFormData(emptyForm);
+        if (isLogin) {
+          // For login, close modal immediately
+          onClose();
+          // Clear the form data
+          const emptyForm = {
+            email: '',
+            password: ''
+          };
+          setFormData(emptyForm);
+        } else {
+          // For signup, show success message first
+          setSuccessMessage('Account created! Welcome to SkillSwap! 🎉');
+          // Clear the form data
+          const emptyForm = {
+            email: '',
+            password: ''
+          };
+          setFormData(emptyForm);
+          // Close modal after 2 seconds to let user see the success message
+          setTimeout(() => {
+            onClose();
+            setSuccessMessage('');
+          }, 2000);
+        }
       } else {
         // Show error message from the server
         setError(result.error);
@@ -88,6 +110,8 @@ const AuthModal = ({ isOpen, onClose }) => {
     setIsLogin(!isLogin);
     // Clear any error messages
     setError('');
+    // Clear any success messages
+    setSuccessMessage('');
     // Clear the form data
     const emptyForm = {
       email: '',
@@ -111,6 +135,7 @@ const AuthModal = ({ isOpen, onClose }) => {
 
         <form onSubmit={handleSubmit} className="auth-form">
           {error && <div className="auth-error">{error}</div>}
+          {successMessage && <div className="auth-success">{successMessage}</div>}
           
           <div className="form-group">
             <input
