@@ -3,7 +3,7 @@ import "./MatchCard.css";
 import { API_URL } from "../../App";
 import userPlaceholder from "../../assets/user.png";
 
-const MatchCard = ({ user, onChat, onViewProfile }) => {
+const MatchCard = ({ user, onChat, onViewProfile, rankType }) => {
   const getImageUrl = () => {
     if (!user.image_url) {
       return userPlaceholder;
@@ -15,7 +15,7 @@ const MatchCard = ({ user, onChat, onViewProfile }) => {
   };
 
   return (
-  <div className="match-card">
+  <div className={`match-card ${rankType === 'Perfect Match' ? 'perfect-match' : ''}`}>
       <div className="match-card-header">
         <img 
           src={getImageUrl()} 
@@ -26,6 +26,11 @@ const MatchCard = ({ user, onChat, onViewProfile }) => {
       <span style={{ cursor: 'pointer', textDecoration: 'underline' }} onClick={() => onViewProfile && onViewProfile(user)}>
         {user.username || user.name || 'Anonymous'}
       </span>
+      {rankType && (
+        <div className="match-card-rank-type">
+          {rankType}
+        </div>
+      )}
     </div>
     </div>
     <div className="match-card-info">

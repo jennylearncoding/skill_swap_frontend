@@ -11,6 +11,11 @@
     gap: 0.5rem;
     position: relative;
   }
+  
+  .match-card.perfect-match {
+    background: #fffbf0;
+    border: 2px solid #fbc02d;
+  }
 
   .match-card-header {
     display: flex;
@@ -40,6 +45,21 @@
     margin-top: 8px;
     font-family: 'Montserrat', sans-serif;
     z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  
+  .match-card-rank-type {
+    font-size: 0.8rem;
+    color: #667eea;
+    background: #e6f3ff;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
   
   .match-card-info {

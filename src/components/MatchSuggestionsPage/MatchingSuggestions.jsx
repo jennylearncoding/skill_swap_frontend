@@ -42,8 +42,7 @@ const MatchSuggestionsPage = ({
           const data = await matchesResponse.json();
           
           // Backend returns matches as array of objects with user, rankType, relevanceScore
-          const matchedUsers = (data.matches || []).map(match => match.user);
-          setMatches(matchedUsers);
+          setMatches(data.matches || []);
           setTotalMatches(data.totalMatches || 0);
           const filterTags = data.availableFilterTags || [];
           setAvailableFilterTags(filterTags);
@@ -87,7 +86,9 @@ const MatchSuggestionsPage = ({
     ? matches // If no filters selected, show all matches
     : activeFilters.length === availableFilterTags.length
     ? matches // If all filters selected, show all matches
-    : matches.filter(user => {
+    : matches.filter(match => {
+        const user = match.user;
+        if (!user) return false;
         const userOfferTags = user.userOffer?.tags || [];
         const userWantTags = user.userWant?.tags || [];
         const allUserTags = [...userOfferTags, ...userWantTags];
@@ -188,14 +189,21 @@ const MatchSuggestionsPage = ({
         {visibleMatches.length === 0 ? (
           <div>No matches found.</div>
         ) : (
-          visibleMatches.map((user) => (
-            <MatchCard 
-              key={user.id} 
-              user={user} 
-              onChat={() => setChatUser(user)} 
-              onViewProfile={setViewedUser}
-            />
-          ))
+          visibleMatches.map((match) => {
+            // Skip matches that don't have a valid user object
+            if (!match || !match.user || !match.user.id) {
+              return null;
+            }
+            return (
+              <MatchCard 
+                key={match.user.id} 
+                user={match.user} 
+                rankType={match.rankType}
+                onChat={() => setChatUser(match.user)} 
+                onViewProfile={setViewedUser}
+              />
+            );
+          }).filter(Boolean)
         )}
         <button
           className="arrow-btn"
